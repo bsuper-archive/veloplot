@@ -39,6 +39,8 @@ def calc_force_moment(df, calibration):
 
     df - Pandas DataFrame from calling pd.read_csv(data_file)
     calibration - calibration matrix [shape - (24, 6)]
+
+    S is 24 x (# num data)
     """
     S = []
     sensor_columns = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"]
@@ -91,7 +93,7 @@ ylabels = {
     "Left Leg Pos": "leg position (rad)"
 }
 
-def plot_columns(df, columns, output_filename="~/plots.png", save_figure=True):
+def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", save_figure=True):
     """
     Columns - list of columns to plot with respect to time
     """
@@ -112,9 +114,12 @@ def plot_columns(df, columns, output_filename="~/plots.png", save_figure=True):
     plt.show()
 
     if save_figure:
-        print "Saving image as", output_filename
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        print "Saving image as", output_dir + output_filename
         figure.set_size_inches(12, 8)
-        figure.savefig(output_filename, dpi=700)
+        figure.savefig(output_dir + output_filename, dpi=700)
         print "Image saved."
 
 #########################################
@@ -217,7 +222,7 @@ def process_data(df, calibration, calibrate=True, k=50, leg_pos_in_radians=True)
 #####################################
 
 def process_data_files(data_file, calibration_file):
-    calibration = loadmat(CALIBRATION_FILE)['N']
+    calibration = loadmat(calibration_file)['N']
     data_csv = write_data_file_to_csv(data_file)
     df = pd.read_csv(data_csv)
     return process_data(df, calibration)
