@@ -93,11 +93,11 @@ ylabels = {
     "Left Leg Pos": "leg position (rad)"
 }
 
-def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", save_figure=True):
+def plot_columns(df, columns, output_dir="out/", output_filename="plot", save_figure=True):
     """
     Columns - list of columns to plot with respect to time
     """
-
+    plot_filename = str(output_filename) + ".png"
     figure, axarr = plt.subplots(len(columns))
     plt.tight_layout()
 
@@ -117,9 +117,9 @@ def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", sa
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        print "Saving image as", output_dir + output_filename
+        print "Saving image as", output_dir + plot_filename
         figure.set_size_inches(12, 8)
-        figure.savefig(output_dir + output_filename, dpi=700)
+        figure.savefig(output_dir + plot_filename, dpi=700)
         print "Image saved."
 
 #########################################
