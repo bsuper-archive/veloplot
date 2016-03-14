@@ -24,7 +24,7 @@ def write_data_file_to_csv(data_file, output_filename=None, output_dir="tmp/"):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     if not output_filename:
-        output_filename = data_file.replace("txt", "csv")
+        output_filename = data_file.replace("txt", "csv").replace("/", "-")
     with open(data_file, "r") as data_f, open(output_dir + output_filename, "w") as out_f:
         data = [line for line in data_f][8:]
         # convert column line to proper csv line
@@ -68,38 +68,75 @@ def butterworth_filter(data):
 #########################################
 
 titles = {
+    "AX": "Accelerations",
+    "AY": "Accelerations",
+    "AZ": "Accelerations",
+    "A_mag": "Magnitude of Accelerations",
     "Fx": "Forces",
     "Fy": "Forces",
     "Fz": "Forces",
+    "F_mag": "Magnitude of Forces",
     "Mx": "Moments",
     "My": "Moments",
     "Mz": "Moments",
+    "M_mag": "Magnitude of Moments",
     "TorqueL": "Torques",
     "TorqueR": "Torques",
     "Right Leg Pos": "Leg Positions",
-    "Left Leg Pos": "Leg Positions"
+    "Left Leg Pos": "Leg Positions",
+    "RBEMF": "Back EMF",
+    "LBEMF": "Back EMF",
+    "VMotorR": "VMotor",
+    "VMotorL": "VMotor",
+    "PowerR": "Power",
+    "PowerL": "Power",
+    "GyroX": "Gyro",
+    "GyroY": "Gyro",
+    "GyroZ": "Gyro",
+    "Gyro_mag": "Speed of rotation",
+    "Energy": "Energy",
+    "VBatt": "VBatt",
+    "AngleZ": "Anglez"
 }
 
 ylabels = {
+    "AX": "Acceleration m/s^2",
+    "AY": "Acceleration m/s^2",
+    "AZ": "Acceleration m/s^2",
+    "A_mag": "Acceleration m/s^2",
     "Fx": "Force (N)",
     "Fy": "Force (N)",
     "Fz": "Force (N)",
+    "F_mag": "Force (N)",
     "Mx": "Moment (mN * m)",
     "My": "Moment (mN * m)",
     "Mz": "Moment (mN * m)",
+    "M_mag": "Moment (mN * m)",
     "TorqueL": r'$\tau$ (mN * m)',
     "TorqueR": r'$\tau$ (mN * m)',
     "Right Leg Pos": "leg position (rad)",
-    "Left Leg Pos": "leg position (rad)"
+    "Left Leg Pos": "leg position (rad)",
+    "RBEMF": r'$\frac{kg * m^2}{A * s^2}$',
+    "LBEMF": r'$\frac{kg * m^2}{A * s^2}$',
+    "VMotorR": "VMotor",
+    "VMotorL": "VMotor",
+    "PowerR": "Power",
+    "PowerL": "Power",
+    "GyroX": "degrees/s",
+    "GyroY": "degrees/s",
+    "GyroZ": "degrees/s",
+    "Gyro_mag": "degrees/s",
+    "Energy": "Energy",
+    "VBatt": "VBatt",
+    "AngleZ": "Anglez"
 }
 
-def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", save_figure=True):
+def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", display=False, save_figure=True):
     """
     Columns - list of columns to plot with respect to time
     """
 
     figure, axarr = plt.subplots(len(columns))
-    plt.tight_layout()
 
     for i in range(len(columns)):
         if type(columns[i]) == list:
@@ -107,19 +144,24 @@ def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", sa
                 axarr[i].plot(df["time"], df[col], label=col)
                 axarr[i].set_ylabel(ylabels[col])
                 axarr[i].set_title(titles[col])
+        else:
+            axarr[i].plot(df["time"], df[columns[i]], label=columns[i])
+            axarr[i].set_ylabel(ylabels[columns[i]])
+            axarr[i].set_title(titles[columns[i]])
         axarr[i].set_xlim([0, df["time"].max()])
         axarr[i].set_xlabel("Time (s)")
-        axarr[i].legend(loc='best')
-    figure.set_size_inches(12, 8)
-    plt.show()
+        axarr[i].legend(loc='upper right')
+    figure.set_size_inches(12, int(2 * len(columns)))
+    plt.tight_layout()
+    if display:
+        plt.show()
 
     if save_figure:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
         print "Saving image as", output_dir + output_filename
-        figure.set_size_inches(12, 8)
-        figure.savefig(output_dir + output_filename, dpi=700)
+        figure.savefig(output_dir + output_filename, dpi=350)
         print "Image saved."
 
 #########################################
@@ -207,6 +249,7 @@ def process_data(df, calibration, calibrate=True, k=50, leg_pos_in_radians=True)
         angleZ[i] = angleZ[i - 1] + df["GyroZ"][i] / 1000.
     df["AngleZ"] = angleZ
 
+    # force and moment
     force_moment = calc_force_moment(df, calibration)
     if calibrate:
         force_moment = calibrate_to_first_k_samples(force_moment, k=k)
@@ -214,6 +257,15 @@ def process_data(df, calibration, calibrate=True, k=50, leg_pos_in_radians=True)
     M_cols = ["Fx", "Fy", "Fz", "Mx", "My", "Mz"]
     for i in range(6):
         df[M_cols[i]] = force_moment[:, i]
+
+    # force magnitude
+    df["F_mag"] = np.linalg.norm(np.array([df["Fx"], df["Fy"], df["Fz"]]), axis=0)
+    # acceleration magnitude
+    df["A_mag"] = np.linalg.norm(np.array([df["AX"], df["AY"], df["AZ"]]), axis=0)
+    # moment magnitude
+    df["M_mag"] = np.linalg.norm(np.array([df["Mx"], df["My"], df["Mz"]]), axis=0)
+    # speed of rotation
+    df["Gyro_mag"] = np.linalg.norm(np.array([df["GyroX"], df["GyroY"], df["GyroZ"]]), axis=0)
 
     return df
 
@@ -231,8 +283,9 @@ def process_data_files(data_file, calibration_file):
 # TESTING Code
 #####################################
 
-# CALIBRATION_FILE = "N_matrix_trial9.mat"
-# DATA_FILE = "2016.03.06_19.16.20_trial_3_imudata.txt"
-# df = process_data_files(DATA_FILE, CALIBRATION_FILE)
-# plot_forces_moments(df)
-# plot_columns(df, [["TorqueL", "TorqueR"], ["Left Leg Pos", "Right Leg Pos"], ["Fx", "Fy", "Fz"], ["Mx", "My", "Mz"]])
+if __name__ == "__main__":
+    CALIBRATION_FILE = "N_matrix_trial9.mat"
+    DATA_FILE = "crashing_into_wall/5/2016.03.06_19.18.30_trial_5_imudata.txt"
+    df = process_data_files(DATA_FILE, CALIBRATION_FILE)
+    plot_columns(df, [["TorqueL", "TorqueR"], ["Left Leg Pos", "Right Leg Pos"], ["RBEMF", "LBEMF"], ["VMotorR", "VMotorL"], ["PowerR", "PowerL"], "VBatt", "AngleZ"], output_filename="basic.png")
+    plot_columns(df, [["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"], "M_mag", ["AX", "AY", "AZ"], "A_mag", ["GyroX", "GyroY", "GyroZ"], "Gyro_mag"], output_filename="FMAG.png")
