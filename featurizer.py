@@ -79,7 +79,6 @@ def featurize(df_seg):
 # PERFORM FEATURIZATION
 #########################################
 
-CALIBRATION_FILE = "N_matrix_trial9.mat"
 DATA_FOLDER = "data/"
 CTL_FILES = DATA_FOLDER + "ctl*.csv"
 ACT_FILES = DATA_FOLDER + "act*.csv"
@@ -89,7 +88,6 @@ def create_feature_vector(data_files, label=0):
     labels = []
     for f in glob.glob(data_files):
         df = pd.read_csv(f)
-        df = utils.process_data(df, CALIBRATION_FILE)
         df_segs = segment(df)
         for df_seg in df_segs:
             lst.append(featurize(df_seg))
@@ -99,10 +97,4 @@ def create_feature_vector(data_files, label=0):
 def get_feature_vector(ctl_files, act_files):
     ctl_features, ctl_labels = create_feature_vector(ctl_files, label=0)
     act_features, act_labels = create_feature_vector(act_files, label=1)
-    import pdb; pdb.set_trace()
-
-
-print glob.glob(CTL_FILES)
-print glob.glob(ACT_FILES)
-
-get_feature_vector(CTL_FILES, ACT_FILES)
+    return np.vstack((ctl_features, act_features)), np.vstack((ctl_labels, act_labels))
