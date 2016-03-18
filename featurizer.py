@@ -1,8 +1,11 @@
 import numpy as np
+import utils
 from scipy import fftpack, signal, stats
 import itertools
+import glob
+import pandas as pd
 
-def segment(data, window_size=256, overlap=.5, padding=None):
+def segment(data, window_size=512, overlap=.5, padding=None):
     """
     Segment data by WINDOW SIZE with OVERLAP
     * Padding not yet completed
@@ -71,3 +74,35 @@ def featurize(df_seg):
             features.append(pairwise_correlation(df_seg[pair[0]], df_seg[pair[1]])[0])
 
     return np.array(features)
+
+#########################################
+# PERFORM FEATURIZATION
+#########################################
+
+CALIBRATION_FILE = "N_matrix_trial9.mat"
+DATA_FOLDER = "data/"
+CTL_FILES = DATA_FOLDER + "ctl*.csv"
+ACT_FILES = DATA_FOLDER + "act*.csv"
+
+def create_feature_vector(data_files, label=0):
+    lst = []
+    labels = []
+    for f in glob.glob(data_files):
+        df = pd.read_csv(f)
+        df = utils.process_data(df, CALIBRATION_FILE)
+        df_segs = segment(df)
+        for df_seg in df_segs:
+            lst.append(featurize(df_seg))
+            labels.append(label)
+    return np.array(lst), np.array(labels)
+
+def get_feature_vector(ctl_files, act_files):
+    ctl_features, ctl_labels = create_feature_vector(ctl_files, label=0)
+    act_features, act_labels = create_feature_vector(act_files, label=1)
+    import pdb; pdb.set_trace()
+
+
+print glob.glob(CTL_FILES)
+print glob.glob(ACT_FILES)
+
+get_feature_vector(CTL_FILES, ACT_FILES)
