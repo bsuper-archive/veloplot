@@ -96,8 +96,7 @@ def create_feature_vector(data_files, label=0):
 
 def get_feature_vector(ctl_files, act_files):
     ctl_features, ctl_labels = create_feature_vector(ctl_files, label=0)
-    act_features, act_labels = create_feature_vector(act_files, label=1)
-    import pdb; pdb.set_trace()
+    act_features, act_labels = create_feature_vector(act_files, label=1)    
     features, labels = np.vstack((ctl_features, act_features)), np.concatenate((ctl_labels, act_labels))
     # add here to write these two as two .mat files to data/ dir to keep
     return features, labels
