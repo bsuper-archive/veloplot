@@ -73,7 +73,7 @@ ylabels = {
     "AngleZ": "Anglez"
 }
 
-def segment_data(df, columns=[["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"], "M_mag", ["AX", "AY", "AZ"], "A_mag"], output_dir="segments/", display=True):
+def segment_data_gui(df, columns=[["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"], "M_mag", ["AX", "AY", "AZ"], "A_mag"], output_dir="segments/", display=True):
     """
     Columns - list of columns to plot with respect to time
     """
@@ -87,14 +87,14 @@ def segment_data(df, columns=[["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"], "
         xdata = thisline.get_xdata()
         ydata = thisline.get_ydata()
         ind = event.ind
-        print "Picked X: ", xdata[ind][0]
         d['num_events_picked'] += 1
         if d['num_events_picked'] == 2:
+            print "Segment End: ", xdata[ind][0]
             segment_df(df, d["segment_begin"], xdata[ind][0], output_dir=output_dir)
             plt.close()
         else:
+            print "Segment Begin: ", xdata[ind][0]
             d["segment_begin"] = xdata[ind][0]
-
 
     for i in range(len(columns)):
         if type(columns[i]) == list:
@@ -121,7 +121,7 @@ def do_segmentation(data_file, calibration_file, output_dir="segments/"):
     df = pd.read_csv(data_csv)
     df = utils.process_data(df, calibration)
     print df.columns
-    segment_data(df, output_dir=output_dir)
+    segment_data_gui(df, output_dir=output_dir)
 
 def segment_df(df, segment_begin, segment_end, output_dir="segments/"):
     segment_begin, segment_end = int(segment_begin * 1000), int(segment_end * 1000)
