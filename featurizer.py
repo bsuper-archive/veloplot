@@ -63,7 +63,7 @@ def featurize(df_seg):
         features.append(stats.kurtosis(df_seg[col]))
 
         # frequency domain
-        sig_fft, freq = fft_freq(df_seg[col])
+        sig_fft, freq = rfft_freq(df_seg[col])
         features.append(freq_domain_entropy(sig_fft))
         features.append(energy(sig_fft))
 
@@ -75,13 +75,35 @@ def featurize(df_seg):
 
     return np.array(features)
 
+def get_feature_names():
+    features = []
+
+    cols = ["Fx", "Fy", "Fz", "F_mag", "Mx", "My", "Mz", "M_mag", "AX", "AY", "AZ", "A_mag"]
+    for col in cols:
+        # statistical metrics
+        features.append("{0}_max".format(col))
+        features.append("{0}_min".format(col))
+        features.append("{0}_mean".format(col))
+        features.append("{0}_std".format(col))
+        features.append("{0}_skew".format(col))
+        features.append("{0}_kurtosis".format(col))
+
+        # frequency domain
+        features.append("{0}_entropy".format(col))
+        features.append("{0}_energy".format(col))
+
+    f_cols = ["Fx", "Fy", "Fz"]
+    m_cols = ["Mx", "My", "Mz"]
+    a_cols = ["AX", "AY", "AZ"]
+    for col_set in [f_cols, m_cols, a_cols]:
+        for pair in itertools.combinations(col_set, 2):
+            features.append("{0}_corre".format(pair))
+
+    return np.array(features)
+
 #########################################
 # PERFORM FEATURIZATION
 #########################################
-
-DATA_FOLDER = "data/"
-CTL_FILES = DATA_FOLDER + "ctl*.csv"
-ACT_FILES = DATA_FOLDER + "act*.csv"
 
 def create_feature_vector(data_files, label=0):
     lst = []
@@ -97,4 +119,5 @@ def create_feature_vector(data_files, label=0):
 def get_feature_vector(ctl_files, act_files):
     ctl_features, ctl_labels = create_feature_vector(ctl_files, label=0)
     act_features, act_labels = create_feature_vector(act_files, label=1)
-    return np.vstack((ctl_features, act_features)), np.vstack((ctl_labels, act_labels))
+    print "CTL size:", ctl_labels.shape[0], "ACT size:", act_labels.shape[0]
+    return np.vstack((ctl_features, act_features)), np.hstack((ctl_labels, act_labels))
