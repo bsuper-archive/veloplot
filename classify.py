@@ -34,6 +34,7 @@ def random_forests(X, Y, k=5):
     print "OOB score:", clf.oob_score_
     sorted_feature_importances = sorted(zip(featurizer.get_feature_names(), clf.feature_importances_), \
                                     key=operator.itemgetter(1))
+    print "Feature Importances:"
     print sorted_feature_importances
 
 def do_random_forests():
@@ -48,6 +49,7 @@ def xgb_trees(X, Y, k=5):
     clf.fit(X, Y)
     sorted_feature_importances = sorted(zip(featurizer.get_feature_names(), clf.feature_importances_), \
                                     key=operator.itemgetter(1))
+    print "Feature Importances:"
     print sorted_feature_importances
 
 def do_xgb_trees():
