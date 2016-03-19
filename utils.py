@@ -185,6 +185,7 @@ gyro_scale = (1 / 16.384) * (np.pi / 180.0)
 
 def process_data(df, calibration, calibrate=True, k=50, leg_pos_in_radians=True):
     # convert timestamps to seconds
+    print df.columns
     df["time"] = df["time"] / 1000000.0
 
     # Leg Position R,L
