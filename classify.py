@@ -26,6 +26,10 @@ def get_XY():
     features, labels = preprocess(features, labels)
     return features, labels
 
+#########################################
+# RANDOM FORESTS
+#########################################
+
 def random_forests(X, Y, k=5):
     clf = RandomForestClassifier(n_estimators=200, max_features='sqrt', oob_score=True)
     cv_scores = cross_val_score(clf, X, Y, cv=k)
@@ -42,6 +46,10 @@ def do_random_forests():
     X, Y = get_XY()
     random_forests(X, Y)
 
+#########################################
+# GRADIENT BOOSTED TREES
+#########################################
+
 def xgb_trees(X, Y, k=5):
     clf = GradientBoostingClassifier(n_estimators=200, max_features='sqrt')
     cv_scores = cross_val_score(clf, X, Y, cv=k)
@@ -57,6 +65,10 @@ def do_xgb_trees():
     X, Y = get_XY()
     xgb_trees(X, Y)
 
+#########################################
+# SVM
+#########################################
+
 def svc(X, Y, k=10):
     clf = SVC()
     cv_scores = cross_val_score(clf, X, Y, cv=k)
@@ -66,6 +78,10 @@ def do_svc():
     print "\nRunning SVC..."
     X, Y = get_XY()
     svc(X, Y)
+
+#########################################
+# NEURAL NETWORK
+#########################################
 
 def dnn(X, Y, k=10, nn_lr=0.1, nn_steps=1000):
     def relu_dnn(X, y, hidden_units=[100, 100]):
