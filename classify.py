@@ -37,7 +37,7 @@ def random_forests(X, Y, k=5):
     print sorted_feature_importances
 
 def do_random_forests():
-    print "Running Random Forests..."
+    print "\nRunning Random Forests..."
     X, Y = get_XY()
     random_forests(X, Y)
 
@@ -51,7 +51,7 @@ def xgb_trees(X, Y, k=5):
     print sorted_feature_importances
 
 def do_xgb_trees():
-    print "Running XGB Trees..."
+    print "\nRunning XGB Trees..."
     X, Y = get_XY()
     xgb_trees(X, Y)
 
@@ -61,7 +61,7 @@ def svc(X, Y, k=10):
     print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores
 
 def do_svc():
-    print "Running SVC..."
+    print "\nRunning SVC..."
     X, Y = get_XY()
     svc(X, Y)
 
@@ -82,12 +82,12 @@ def dnn(X, Y, k=10, nn_lr=0.1, nn_steps=1000):
     print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores), "Scores: ", cv_scores
 
 def do_dnn():
-    print "Running Neural Network..."
+    print "\nRunning Neural Network..."
     X, Y = get_XY()
     dnn(X, Y)
 
 if __name__ == "__main__":
-    # do_random_forests()
-    # do_xgb_trees()
-    # do_svc()
+    do_random_forests()
+    do_xgb_trees()
+    do_svc()
     do_dnn()
