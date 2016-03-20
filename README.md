@@ -67,7 +67,7 @@ See this [iPython Notebook](https://github.com/bsuper/veloplot/blob/master/examp
 
 ####[featurizer.py](https://github.com/bsuper/veloplot/blob/master/featurizer.py)
 
-Featurizes the data. Currently, we implement a 512 sample window with 50% overlap. Given that the leg frequency for our sliding experiments is 4Hz, our window would capture 1-2 complete leg cycles of data. For each window, we compute the following statistical metrics: [max, min, mean, std, skew, kurtosis] and frequency domain metrics: [entropy, energy] and also pairwise correlation.
+Featurizes the data. Currently, we implement a 512 sample window (~.512s) with 50% overlap. Given that the leg frequency for our sliding experiments is 4Hz, our window would capture 1-2 complete leg cycles of data. For each window, we compute the following statistical metrics: [max, min, mean, std, skew, kurtosis] and frequency domain metrics: [entropy, energy] and also pairwise correlation.
 
 You can view an iPython notebook showing our frequency domain features of an example telemetry data [here](https://github.com/bsuper/veloplot/blob/master/disp_freq_domain_features.ipynb).
 
