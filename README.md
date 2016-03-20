@@ -1,7 +1,23 @@
 # veloplot
 Methods for Processing and Plotting Tactile Shell Velociroach Data
 
-### Install dependencies
+###Install Dependencies
+Install virtualenv, if necessary. Virtual Environments allow you to create a sandbox where you can install only project-specific dependencies.
+
+`pip install virtualenv`
+
+Create a virtualenv, commonly called `venv`.
+
+`virtualenv venv`
+
+Activate the virtualenv created.
+
+`source venv/bin/activate`
+
+Thats it! Now you are ready to install project dependencies.
+
+Install dependencies
+
 `pip install -r requirements.txt`
 
 ### Use iPython Notebook
