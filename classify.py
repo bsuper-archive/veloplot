@@ -30,7 +30,7 @@ def get_XY():
 # RANDOM FORESTS
 #########################################
 
-def random_forests(X, Y, k=5):
+def random_forests(X, Y, k=10):
     clf = RandomForestClassifier(n_estimators=200, max_features='sqrt', oob_score=True)
     cv_scores = cross_val_score(clf, X, Y, cv=k)
     print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores
@@ -50,7 +50,7 @@ def do_random_forests():
 # GRADIENT BOOSTED TREES
 #########################################
 
-def xgb_trees(X, Y, k=5):
+def xgb_trees(X, Y, k=10):
     clf = GradientBoostingClassifier(n_estimators=200, max_features='sqrt')
     cv_scores = cross_val_score(clf, X, Y, cv=k)
     print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores

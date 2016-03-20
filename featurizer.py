@@ -105,10 +105,10 @@ def get_feature_names():
 # PERFORM FEATURIZATION
 #########################################
 
-def create_feature_vector(data_files, label=0):
+def create_feature_vector(segmented_data_files, label=0):
     lst = []
     labels = []
-    for f in glob.glob(data_files):
+    for f in glob.glob(segmented_data_files):
         df = pd.read_csv(f)
         df_segs = segment(df)
         for df_seg in df_segs:
