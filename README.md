@@ -23,7 +23,7 @@ Install dependencies
 ###Install Tensorflow
 You have probably seen in the previous step that tensorflow might not have been installed properly using requirements.txt. If that is the case you will have to install it on your own. Here is a quick way to do it:
 
-#### MAC OSX
+#### MAC OSX (CPU Only)
 Activate venv if you haven't already
 
 `source venv/bin/activate`
