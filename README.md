@@ -20,6 +20,20 @@ Install dependencies
 
 `pip install -r requirements.txt`
 
+###Install Tensorflow
+You have probably seen in the previous step that tensorflow might not have been installed properly using requirements.txt. If that is the case you will have to install it on your own. Here is a quick way to do it:
+
+#### MAC OSX
+Activate venv if you haven't already
+
+`source venv/bin/activate`
+
+Install latest Tensorflow using pip
+
+`pip install --upgrade https://storage.googleapis.com/tensorflow/mac/tensorflow-0.7.1-cp27-none-any.whl`
+
+Go to this [site](https://www.tensorflow.org/versions/r0.7/get_started/os_setup.html#test-the-tensorflow-installation) to test your installation
+
 ### Use iPython Notebook
 `jupyter notebook`
 
