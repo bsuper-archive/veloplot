@@ -15,6 +15,8 @@ parser.add_argument('--input_dir', default='./input/',
     help='Directory where experiments are stored')
 parser.add_argument('--output_dir', default='./data/',
     help='Directory to save all the segmented files')
+parser.add_argument('--file', default='none',
+    help='Path to the file you want to segment')
 args = parser.parse_args()
 
 sns.set_style("whitegrid")
@@ -144,13 +146,9 @@ def segment_df(df, segment_begin, segment_end, output_dir="segments/", output_fi
         os.makedirs(output_dir)
 
     exp_num = output_filename.replace("sliding", "")
-    # control_seg1.to_csv(output_dir + output_filename + "_ctl1.csv")
-    # activity_seg.to_csv(output_dir + output_filename + "_act.csv")
-    # control_seg2.to_csv(output_dir + output_filename + "_ctl2.csv")
     control_seg1.to_csv(output_dir + "ctl1-" + exp_num + ".csv")
     activity_seg.to_csv(output_dir + "act-" + exp_num + ".csv")
     control_seg2.to_csv(output_dir + "ctl2-" + exp_num + ".csv")
-
 
 def segment_datafiles(datafile_folder, calibration_file="N_matrix_trial9.mat"):
     print glob.glob(datafile_folder + "*")
@@ -158,11 +156,12 @@ def segment_datafiles(datafile_folder, calibration_file="N_matrix_trial9.mat"):
         do_segmentation(f, calibration_file, args.output_dir)
 
 if __name__ == "__main__":
-    # CALIBRATION_FILE = "N_matrix_trial9.mat"
-    # DATA_FILE = "input/sliding10.txt"
-    print "Segmenting Experiment Data Files...\n"
-
-    input_dir = args.input_dir
-    segment_datafiles(input_dir)
+    if args.file != 'none':
+        print "Segmenting Data File: {0}".format(args.file)
+        do_segmentation(args.file, calibration_file="N_matrix_trial9.mat", output_dir=args.output_dir)
+    else:
+        print "Segmenting Experiment Data Files...\n"
+        input_dir = args.input_dir
+        segment_datafiles(input_dir)
 
     print "Done."
