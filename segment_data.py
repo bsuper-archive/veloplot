@@ -156,6 +156,7 @@ def segment_datafiles(datafile_folder, calibration_file="N_matrix_trial9.mat"):
         do_segmentation(f, calibration_file, args.output_dir)
 
 if __name__ == "__main__":
+
     if args.file != 'none':
         print "Segmenting Data File: {0}".format(args.file)
         do_segmentation(args.file, calibration_file="N_matrix_trial9.mat", output_dir=args.output_dir)
