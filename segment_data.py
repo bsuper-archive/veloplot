@@ -8,6 +8,15 @@ import os
 import glob
 import argparse
 
+parser = argparse.ArgumentParser(
+    description='Segments each data into three parts: no-contac, contact,\
+     no-contact. Saves them into a data folder.')
+parser.add_argument('--input_dir', default='./input/',
+    help='Directory where experiments are stored')
+parser.add_argument('--output_dir', default='./data/',
+    help='Directory to save all the segmented files')
+args = parser.parse_args()
+
 sns.set_style("whitegrid")
 sns.set_palette("bright")
 
