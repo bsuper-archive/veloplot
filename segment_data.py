@@ -155,7 +155,7 @@ def segment_df(df, segment_begin, segment_end, output_dir="segments/", output_fi
 def segment_datafiles(datafile_folder, calibration_file="N_matrix_trial9.mat"):
     print glob.glob(datafile_folder + "*")
     for f in glob.glob(datafile_folder + "*"):
-        do_segmentation(f, calibration_file)
+        do_segmentation(f, calibration_file, args.output_dir)
 
 if __name__ == "__main__":
     # CALIBRATION_FILE = "N_matrix_trial9.mat"
