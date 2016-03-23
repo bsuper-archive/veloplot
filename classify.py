@@ -10,10 +10,11 @@ import featurizer
 import operator
 import skflow
 import tensorflow as tf
+import sys
 
 DATA_FOLDER = "data/"
-CTL_FILES = DATA_FOLDER + "ctl*.csv"
-ACT_FILES = DATA_FOLDER + "act*.csv"
+CTL_FILES = DATA_FOLDER + "ctl*.csv" #No touch data
+ACT_FILES = DATA_FOLDER + "act*.csv" #Touch data
 
 def preprocess(features, labels):
     features = preprocessing.scale(features)
@@ -26,6 +27,7 @@ def get_XY():
     features, labels = preprocess(features, labels)
     return features, labels
 
+
 #########################################
 # RANDOM FORESTS
 #########################################
@@ -34,17 +36,29 @@ def random_forests(X, Y, k=10):
     clf = RandomForestClassifier(n_estimators=200, max_features='sqrt', oob_score=True)
     cv_scores = cross_val_score(clf, X, Y, cv=k)
     print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores
-    clf.fit(X, Y)
+    classifier = clf.fit(X, Y)
     print "OOB score:", clf.oob_score_
     sorted_feature_importances = sorted(zip(featurizer.get_feature_names(), clf.feature_importances_), \
                                     key=operator.itemgetter(1))
     print "Feature Importances:"
     print sorted_feature_importances
+    return classifier
 
 def do_random_forests():
     print "\nRunning Random Forests..."
     X, Y = get_XY()
-    random_forests(X, Y)
+    classifier = random_forests(X, Y)
+    return classifier
+
+def predict_random_forests(test_data):
+    '''
+    test_data should be a windows.
+    '''
+    clf = do_random_forests()
+    predicted_labels = clf.predict(test_data)
+    print "len(predicted_labels): {0}".format(len(predicted_labels))
+    print "predicted labels: {0}".format(predicted_labels)
+    return predicted_labels
 
 #########################################
 # GRADIENT BOOSTED TREES
@@ -54,16 +68,28 @@ def xgb_trees(X, Y, k=10):
     clf = GradientBoostingClassifier(n_estimators=200, max_features='sqrt')
     cv_scores = cross_val_score(clf, X, Y, cv=k)
     print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores
-    clf.fit(X, Y)
+    classifier = clf.fit(X, Y)
     sorted_feature_importances = sorted(zip(featurizer.get_feature_names(), clf.feature_importances_), \
                                     key=operator.itemgetter(1))
     print "Feature Importances:"
     print sorted_feature_importances
+    return classifier
 
 def do_xgb_trees():
     print "\nRunning XGB Trees..."
     X, Y = get_XY()
-    xgb_trees(X, Y)
+    classifier = xgb_trees(X, Y)
+    return classifier
+
+def predict_xgb_trees(test_data):
+    '''
+    test_data should be a windows.
+    '''
+    clf = do_xgb_trees()
+    predicted_labels = clf.predict(test_data)
+    print "len(predicted_labels): {0}".format(len(predicted_labels))
+    print "predicted labels: {0}".format(predicted_labels)
+    return predicted_labels
 
 #########################################
 # SVM
@@ -73,11 +99,24 @@ def svc(X, Y, k=10):
     clf = SVC()
     cv_scores = cross_val_score(clf, X, Y, cv=k)
     print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores
+    classifier = clf.fit(X,Y)
+    return classifier
 
 def do_svc():
     print "\nRunning SVC..."
     X, Y = get_XY()
-    svc(X, Y)
+    classifier = svc(X, Y)
+    return classifier
+
+def predict_svc(test_data):
+    '''
+    test_data should be a windows.
+    '''
+    clf = do_svc()
+    predicted_labels = clf.predict(test_data)
+    # print "len(predicted_labels): {0}".format(len(predicted_labels))
+    print "predicted labels: {0}".format(predicted_labels)
+    return predicted_labels
 
 #########################################
 # NEURAL NETWORK
@@ -94,15 +133,27 @@ def dnn(X, Y, k=10, nn_lr=0.1, nn_steps=1000):
     for train_indices, test_indices in KFold(X.shape[0], n_folds=k, shuffle=True, random_state=random.randint(0, 1000)):
         X_train, X_test = X[train_indices], X[test_indices]
         Y_train, Y_test = Y[train_indices], Y[test_indices]
-        clf.fit(X_train, Y_train)
+        classifier = clf.fit(X_train, Y_train)
         score = metrics.accuracy_score(Y_test, clf.predict(X_test))
         cv_scores.append(score)
     print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores), "Scores: ", cv_scores
+    return classifier
 
 def do_dnn():
     print "\nRunning Neural Network..."
     X, Y = get_XY()
-    dnn(X, Y)
+    classifier = dnn(X, Y)
+    return classifier
+
+def predict_dnn(test_data):
+    '''
+    test_data should be a windows.
+    '''
+    clf = do_dnn()
+    predicted_labels = clf.predict(test_data)
+    print "len(predicted_labels): {0}".format(len(predicted_labels))
+    print "predicted labels: {0}".format(predicted_labels)
+    return predicted_labels
 
 if __name__ == "__main__":
     do_random_forests()
