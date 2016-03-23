@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing, metrics
+from sklearn.preprocessing import StandardScaler
 from sklearn.cross_validation import train_test_split, cross_val_score, KFold
 from sklearn.utils import shuffle
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -17,15 +18,17 @@ CTL_FILES = DATA_FOLDER + "ctl*.csv" #No touch data
 ACT_FILES = DATA_FOLDER + "act*.csv" #Touch data
 
 def preprocess(features, labels):
-    features = preprocessing.scale(features)
+    scaler = StandardScaler().fit(features)
+    # print "scaler mean:{0} variance{1}".format(scaler.mean_, scaler.var_)
+    features = scaler.transform(features)
     features, labels = shuffle(features, labels, \
                                 random_state=random.randint(0, 1000))
-    return features, labels
+    return features, labels, scaler
 
 def get_XY():
     features, labels = featurizer.get_feature_vector(CTL_FILES, ACT_FILES)
-    features, labels = preprocess(features, labels)
-    return features, labels
+    features, labels, scaler = preprocess(features, labels)
+    return features, labels, scaler
 
 
 #########################################
@@ -46,15 +49,17 @@ def random_forests(X, Y, k=10):
 
 def do_random_forests():
     print "\nRunning Random Forests..."
-    X, Y = get_XY()
+    X, Y, scaler = get_XY()
     classifier = random_forests(X, Y)
-    return classifier
+    return classifier, scaler
 
 def predict_random_forests(test_data):
     '''
     test_data should be a windows.
     '''
-    clf = do_random_forests()
+    clf, scaler = do_random_forests()
+    # print "scaler mean:{0} variance{1}".format(scaler.mean_, scaler.var_)
+    scaler.transform(test_data)
     predicted_labels = clf.predict(test_data)
     print "len(predicted_labels): {0}".format(len(predicted_labels))
     print "predicted labels: {0}".format(predicted_labels)
@@ -77,15 +82,16 @@ def xgb_trees(X, Y, k=10):
 
 def do_xgb_trees():
     print "\nRunning XGB Trees..."
-    X, Y = get_XY()
+    X, Y, scaler = get_XY()
     classifier = xgb_trees(X, Y)
-    return classifier
+    return classifier, scaler
 
 def predict_xgb_trees(test_data):
     '''
     test_data should be a windows.
     '''
-    clf = do_xgb_trees()
+    clf, scaler = do_xgb_trees()
+    scaler.transform(test_data)
     predicted_labels = clf.predict(test_data)
     print "len(predicted_labels): {0}".format(len(predicted_labels))
     print "predicted labels: {0}".format(predicted_labels)
@@ -104,15 +110,16 @@ def svc(X, Y, k=10):
 
 def do_svc():
     print "\nRunning SVC..."
-    X, Y = get_XY()
+    X, Y, scaler = get_XY()
     classifier = svc(X, Y)
-    return classifier
+    return classifier,scaler
 
 def predict_svc(test_data):
     '''
     test_data should be a windows.
     '''
-    clf = do_svc()
+    clf, scaler = do_svc()
+    scaler.transform(test_data)
     predicted_labels = clf.predict(test_data)
     # print "len(predicted_labels): {0}".format(len(predicted_labels))
     print "predicted labels: {0}".format(predicted_labels)
@@ -133,23 +140,25 @@ def dnn(X, Y, k=10, nn_lr=0.1, nn_steps=1000):
     for train_indices, test_indices in KFold(X.shape[0], n_folds=k, shuffle=True, random_state=random.randint(0, 1000)):
         X_train, X_test = X[train_indices], X[test_indices]
         Y_train, Y_test = Y[train_indices], Y[test_indices]
-        classifier = clf.fit(X_train, Y_train)
+        clf.fit(X_train, Y_train)
         score = metrics.accuracy_score(Y_test, clf.predict(X_test))
         cv_scores.append(score)
     print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores), "Scores: ", cv_scores
+    classifier = clf.fit(X,Y)
     return classifier
 
 def do_dnn():
     print "\nRunning Neural Network..."
-    X, Y = get_XY()
+    X, Y, scaler = get_XY()
     classifier = dnn(X, Y)
-    return classifier
+    return classifier, scaler
 
 def predict_dnn(test_data):
     '''
     test_data should be a windows.
     '''
-    clf = do_dnn()
+    clf, scaler = do_dnn()
+    scaler.transform(test_data)
     predicted_labels = clf.predict(test_data)
     print "len(predicted_labels): {0}".format(len(predicted_labels))
     print "predicted labels: {0}".format(predicted_labels)
