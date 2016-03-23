@@ -131,7 +131,7 @@ ylabels = {
     "AngleZ": "Anglez"
 }
 
-def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", display=False, save_figure=True):
+def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", display=False, save_figure=True, color_intervals=None):
     """
     Columns - list of columns to plot with respect to time
     """
@@ -144,10 +144,17 @@ def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", di
                 axarr[i].plot(df["time"], df[col], label=col)
                 axarr[i].set_ylabel(ylabels[col])
                 axarr[i].set_title(titles[col])
+
+
         else:
             axarr[i].plot(df["time"], df[columns[i]], label=columns[i])
             axarr[i].set_ylabel(ylabels[columns[i]])
             axarr[i].set_title(titles[columns[i]])
+
+        for el in color_intervals:
+            plt.axvspan(el[0], el[1],facecolor='y', alpha=0.5)
+
+
         axarr[i].set_xlim([0, df["time"].max()])
         axarr[i].set_xlabel("Time (s)")
         axarr[i].legend(loc='upper right')
