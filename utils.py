@@ -152,7 +152,7 @@ def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", di
             axarr[i].set_title(titles[columns[i]])
 
         for el in color_intervals:
-            plt.axvspan(el[0], el[1],facecolor='y', alpha=0.5)
+            axarr[i].axvspan(el[0], el[1], facecolor='y', alpha=0.5)
 
 
         axarr[i].set_xlim([0, df["time"].max()])
