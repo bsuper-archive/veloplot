@@ -8,6 +8,17 @@ import os
 import glob
 import argparse
 
+parser = argparse.ArgumentParser(
+    description='Segments each data into three parts: no-contac, contact,\
+     no-contact. Saves them into a data folder.')
+parser.add_argument('--input_dir', default='./input/',
+    help='Directory where experiments are stored')
+parser.add_argument('--output_dir', default='./data/',
+    help='Directory to save all the segmented files')
+parser.add_argument('--file', default='none',
+    help='Path to the file you want to segment')
+args = parser.parse_args()
+
 sns.set_style("whitegrid")
 sns.set_palette("bright")
 
@@ -123,30 +134,35 @@ def do_segmentation(data_file, calibration_file, output_dir="segments/"):
     df = pd.read_csv(data_csv)
     df = utils.process_data(df, calibration)
     print df.columns
-    segment_data_gui(df, output_dir=output_dir, output_filename=data_file.replace("txt", "").replace("input", "").replace("/", ""))
+    segment_data_gui(df, output_dir=output_dir, output_filename=data_file.replace("txt", "").replace("input", "").replace("/", "").replace(".", ""))
 
 def segment_df(df, segment_begin, segment_end, output_dir="segments/", output_filename="segmented"):
     segment_begin, segment_end = int(segment_begin * 1000), int(segment_end * 1000)
     control_seg1 = df.iloc[:segment_begin]
     activity_seg = df.iloc[segment_begin:segment_end].reset_index()
     control_seg2 = df.iloc[segment_end:].reset_index()
+    output_dir = args.output_dir #./data/
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    control_seg1.to_csv(output_dir + output_filename + "_ctl1.csv")
-    activity_seg.to_csv(output_dir + output_filename + "_act.csv")
-    control_seg2.to_csv(output_dir + output_filename + "_ctl2.csv")
+
+    exp_num = output_filename.replace("sliding", "")
+    control_seg1.to_csv(output_dir + "ctl1-" + exp_num + ".csv")
+    activity_seg.to_csv(output_dir + "act-" + exp_num + ".csv")
+    control_seg2.to_csv(output_dir + "ctl2-" + exp_num + ".csv")
 
 def segment_datafiles(datafile_folder, calibration_file="N_matrix_trial9.mat"):
-    print glob.glob(datafile_folder + "/*")
-    for f in glob.glob(datafile_folder + "/*"):
-        do_segmentation(f, calibration_file)
+    print glob.glob(datafile_folder + "*")
+    for f in glob.glob(datafile_folder + "*"):
+        do_segmentation(f, calibration_file, args.output_dir)
 
 if __name__ == "__main__":
-    CALIBRATION_FILE = "N_matrix_trial9.mat"
-    DATA_FILE = "input/sliding10.txt"
-    do_segmentation(DATA_FILE, CALIBRATION_FILE, output_dir="sliding10/")
-    # TODO: Implement passing in folders containing many data files
-    # TODO: Implement running from command line
-    # segment_datafiles("input/")
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('input', nargs='+', help='bar help')
+
+    if args.file != 'none':
+        print "Segmenting Data File: {0}".format(args.file)
+        do_segmentation(args.file, calibration_file="N_matrix_trial9.mat", output_dir=args.output_dir)
+    else:
+        print "Segmenting Experiment Data Files...\n"
+        input_dir = args.input_dir
+        segment_datafiles(input_dir)
+
+    print "Done."

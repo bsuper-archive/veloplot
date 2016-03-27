@@ -87,7 +87,20 @@ You can view an iPython notebook showing our frequency domain features of an exa
 
 ####[segment_data.py](https://github.com/bsuper/veloplot/blob/master/segment_data.py)
 
-Segments the data into three parts: no-contact, contact, no-contact. Currently, it only separates one file at a time. We'll implement segmenting multiple files at a time ASAP. Usage will be written soon.
+Segments the data into three parts: no-contact, contact, no-contact. It can separate multiple files (experiments) at once or it can separate one file at a time depending on what you want to do. To separate multiple experiment files (telemetry files) put them in a single directory to make it easier.
+
+Lets say you have a directory called `my_experiments/` where you store all of your experiment data files you want to segment. To segment multiple files at once you will need to specify the path to the directory of your experiments(input_dir) and the path to directory you want all the segments to be saved(output_dir) after the program completes. If the output directory you want them to be saved doesn't exits, it will create it for you.
+
+`python segment_data.py --input_dir /path/to/my_experiments/ --output_dir /path/to/output/dir/`
+
+Example:
+`python segment_data.py --input_dir ./input/ --output_dir ./data/`
+
+Now lets say you want only one file to be segmented instead of a whole directory of files. You can also do that by providing --file along with the path to file. Don't use --input_dir flag when you are segmenting only one file instead of a directory.
+
+`python segment_data.py --file ./path/to/my/file.txt --output_dir ./data/`
+
+The default behaviour is to save all of the segmented files to a `data/` directory within the code's directory.
 
 ####[classify.py](https://github.com/bsuper/veloplot/blob/master/classify.py)
 
