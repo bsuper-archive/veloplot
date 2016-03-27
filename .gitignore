@@ -1,6 +1,6 @@
 venv/*
 *.pyc
-.ipynb_checkpoints/*
+notebooks/*.ipynb_checkpoints/*
 .DS_Store
 */.DS_Store
 data/.DS_Store
