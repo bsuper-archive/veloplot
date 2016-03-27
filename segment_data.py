@@ -134,7 +134,8 @@ def do_segmentation(data_file, calibration_file, output_dir="segments/"):
     df = pd.read_csv(data_csv)
     df = utils.process_data(df, calibration)
     print df.columns
-    segment_data_gui(df, output_dir=output_dir, output_filename=data_file.replace("txt", "").replace("input", "").replace("/", "").replace(".", ""))
+    experiment_name = data_file.split('/')[-1]
+    segment_data_gui(df, output_dir=output_dir, output_filename=experiment_name.replace("txt", "").replace(".", ""))
 
 def segment_df(df, segment_begin, segment_end, output_dir="segments/", output_filename="segmented"):
     segment_begin, segment_end = int(segment_begin * 1000), int(segment_end * 1000)
