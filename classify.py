@@ -127,7 +127,7 @@ def do_svc_cross_val():
 # NEURAL NETWORK
 #########################################
 
-def dnn(nn_lr=0.1, nn_steps=1000):
+def dnn(nn_lr=0.1, nn_steps=2000):
     def relu_dnn(X, y, hidden_units=[100, 100]):
         features = skflow.ops.dnn(X, hidden_units=hidden_units,
           activation=tf.nn.relu)
