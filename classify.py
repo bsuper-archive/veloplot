@@ -64,13 +64,14 @@ def random_forests():
 def random_forests_cross_val(X, Y, k=10):
     clf = random_forests()
     cv_scores = cross_val_score(clf, X, Y, cv=k)
-    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores
+    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean()
+    print "CV Scores: ", ", ".join(map(str, cv_scores))
     clf.fit(X, Y)
     print "OOB score:", clf.oob_score_
     sorted_feature_importances = sorted(zip(featurizer.get_feature_names(), clf.feature_importances_), \
-                                    key=operator.itemgetter(1))
+                                    key=operator.itemgetter(1), reverse=True)
     print "Feature Importances:"
-    print sorted_feature_importances
+    print '\n'.join(map(str, sorted_feature_importances))
     return clf
 
 def do_random_forests_cross_val():
@@ -89,12 +90,13 @@ def xgb_trees():
 def xgb_trees_cross_val(X, Y, k=10):
     clf = xgb_trees()
     cv_scores = cross_val_score(clf, X, Y, cv=k)
-    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores
+    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean()
+    print "CV Scores: ", ", ".join(map(str, cv_scores))
     clf = clf.fit(X, Y)
     sorted_feature_importances = sorted(zip(featurizer.get_feature_names(), clf.feature_importances_), \
-                                    key=operator.itemgetter(1))
+                                    key=operator.itemgetter(1), reverse=True)
     print "Feature Importances:"
-    print sorted_feature_importances
+    print '\n'.join(map(str, sorted_feature_importances))
     return clf
 
 def do_xgb_trees_cross_val():
@@ -113,7 +115,8 @@ def svc():
 def svc_cross_val(X, Y, k=10):
     clf = svc()
     cv_scores = cross_val_score(clf, X, Y, cv=k)
-    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean(), "Scores: ", cv_scores
+    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean()
+    print "CV Scores: ", ", ".join(map(str, cv_scores))
     clf = clf.fit(X,Y)
     return clf
 
@@ -145,7 +148,8 @@ def dnn_cross_val(X, Y, k=10):
         clf.fit(X_train, Y_train)
         score = metrics.accuracy_score(Y_test, clf.predict(X_test))
         cv_scores.append(score)
-    print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores), "Scores: ", cv_scores
+    print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores)
+    print "CV Scores: ", ", ".join(map(str, cv_scores))
     return clf
 
 def do_dnn_cross_val():
@@ -172,7 +176,8 @@ def ensemble_cross_val(X, Y, k=10):
         clf.fit(X_train, Y_train)
         score = metrics.accuracy_score(Y_test, clf.predict(X_test))
         cv_scores.append(score)
-    print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores), "Scores: ", cv_scores
+    print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores)
+    print "CV Scores: ", ", ".join(map(str, cv_scores))
     return clf
 
 def do_ensemble_cross_val():
