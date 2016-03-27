@@ -104,7 +104,7 @@ The default behaviour is to save all of the segmented files to a `data/` directo
 
 ####[classify.py](https://github.com/bsuper/veloplot/blob/master/classify.py)
 
-Classifies the data. Currently, five models are implemented: Random Forests, Gradient Boosted Trees, RBF SVM, a 2 hidden layer Neural Network with 100 nodes in each hidden layer, and an ensemble of the four previous classifiers. All of their average 10-fold cross validation accuracy are ~92-94% with the ensemble being the least variant at ~93-94%. Random forests and gradient boosted trees also give feature importances.
+Classifies the data. Currently, five models are implemented: Random Forests, Gradient Boosted Trees, RBF SVM, a 2 hidden layer Neural Network with 100 nodes in each hidden layer, and an ensemble of the four previous classifiers. All of their average 10-fold cross validation accuracy are ~94-96% with the ensemble being the least variant at ~96%. Random forests and gradient boosted trees also give feature importances.
 
 You can see the results [here](https://github.com/bsuper/veloplot/blob/master/cross_val_scores.ipynb).
 
