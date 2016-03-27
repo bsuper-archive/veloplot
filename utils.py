@@ -17,7 +17,7 @@ def print_header(data_file):
     with open(data_file, "r") as f:
         print "".join([line for line in f][:7])
 
-def write_data_file_to_csv(data_file, output_filename=None, output_dir="tmp/"):
+def write_data_file_to_csv(data_file, output_filename=None, output_dir=os.path.dirname(os.path.realpath(__file__)) + "/tmp/"):
     """
     Create a csv file from the data file
     """
@@ -150,8 +150,9 @@ def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", di
             axarr[i].set_ylabel(ylabels[columns[i]])
             axarr[i].set_title(titles[columns[i]])
 
-        for el in color_intervals:
-            axarr[i].axvspan(el[0], el[1], facecolor='y', alpha=0.5)
+        if color_intervals:
+            for el in color_intervals:
+                axarr[i].axvspan(el[0], el[1], facecolor='y', alpha=0.5)
 
         axarr[i].set_xlim([0, df["time"].max()])
         axarr[i].set_xlabel("Time (s)")
@@ -291,7 +292,7 @@ def process_data_files(data_file, calibration_file):
 #####################################
 
 if __name__ == "__main__":
-    CALIBRATION_FILE = "N_matrix_trial9.mat"
+    CALIBRATION_FILE = "input/N_matrix_trial9.mat"
     DATA_FILE = "crashing_into_wall/5/2016.03.06_19.18.30_trial_5_imudata.txt"
     df = process_data_files(DATA_FILE, CALIBRATION_FILE)
     plot_columns(df, [["TorqueL", "TorqueR"], ["Left Leg Pos", "Right Leg Pos"], ["RBEMF", "LBEMF"], ["VMotorR", "VMotorL"], ["PowerR", "PowerL"], "VBatt", "AngleZ"], output_filename="basic.png")

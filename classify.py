@@ -13,11 +13,12 @@ import skflow
 import tensorflow as tf
 import sys
 import utils
+import os
 
-DATA_FOLDER = "data/"
+DATA_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/data/"
 CTL_FILES = DATA_FOLDER + "ctl*.csv" # No touch data
 ACT_FILES = DATA_FOLDER + "act*.csv" # Touch data
-CALIBRATION_FILE = "N_matrix_trial9.mat"
+CALIBRATION_FILE = "input/N_matrix_trial9.mat"
 
 def preprocess(features, labels):
     scaler = StandardScaler().fit(features)
