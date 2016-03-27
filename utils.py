@@ -145,7 +145,6 @@ def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", di
                 axarr[i].set_ylabel(ylabels[col])
                 axarr[i].set_title(titles[col])
 
-
         else:
             axarr[i].plot(df["time"], df[columns[i]], label=columns[i])
             axarr[i].set_ylabel(ylabels[columns[i]])
@@ -154,19 +153,19 @@ def plot_columns(df, columns, output_dir="out/", output_filename="plots.png", di
         for el in color_intervals:
             axarr[i].axvspan(el[0], el[1], facecolor='y', alpha=0.5)
 
-
         axarr[i].set_xlim([0, df["time"].max()])
         axarr[i].set_xlabel("Time (s)")
         axarr[i].legend(loc='upper right')
+
     figure.set_size_inches(12, int(2 * len(columns)))
     plt.tight_layout()
+
     if display:
         plt.show()
 
     if save_figure:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-
         print "Saving image as", output_dir + output_filename
         figure.savefig(output_dir + output_filename, dpi=350)
         print "Image saved."
