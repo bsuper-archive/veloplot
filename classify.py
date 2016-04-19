@@ -38,16 +38,16 @@ def get_test_data(test_file="test/sliding11.txt", calibration_file=CALIBRATION_F
     test_data = np.array(map(lambda df_seg: featurizer.featurize(df_seg), df_segs))
     return test_data, df, df_segs
 
-def clf_predict(clf, test_data, df=None, df_segs=None):
-    X, Y, scaler = get_preprocessed_train_data()
+def clf_predict(clf, test_data, ctl_files=CTL_FILES, act_files=ACT_FILES):
+    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
     clf.fit(X, Y)
     test_data = scaler.transform(test_data)
     return clf.predict(test_data)
 
 def clf_predict_and_visualize(clf, test_data, df, df_segs, \
                                 columns=[["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"], "M_mag", ["AX", "AY", "AZ"], "A_mag", ["GyroX", "GyroY", "GyroZ"], "Gyro_mag"], \
-                                display=True, save_figure=False, output_dir="out/", output_filename="preds_vis.png"):
-    preds = clf_predict(clf, test_data)
+                                display=True, save_figure=False, output_dir="out/", output_filename="preds_vis.png", ctl_files=CTL_FILES, act_files=ACT_FILES):
+    preds = clf_predict(clf, test_data, ctl_files=ctl_files, act_files=act_files)
     color_intervals = []
     for i in xrange(len(df_segs)):
         if preds[i] == 1:
@@ -75,9 +75,10 @@ def random_forests_cross_val(X, Y, k=10):
     print '\n'.join(map(str, sorted_feature_importances))
     return clf
 
-def do_random_forests_cross_val():
+def do_random_forests_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
+    print ctl_files
     print "\nRunning Random Forests..."
-    X, Y, scaler = get_preprocessed_train_data()
+    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
     clf = random_forests_cross_val(X, Y)
     return clf, scaler
 
@@ -100,9 +101,9 @@ def xgb_trees_cross_val(X, Y, k=10):
     print '\n'.join(map(str, sorted_feature_importances))
     return clf
 
-def do_xgb_trees_cross_val():
+def do_xgb_trees_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print "\nRunning XGB Trees..."
-    X, Y, scaler = get_preprocessed_train_data()
+    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
     clf = xgb_trees_cross_val(X, Y)
     return clf, scaler
 
@@ -121,9 +122,9 @@ def svc_cross_val(X, Y, k=10):
     clf = clf.fit(X,Y)
     return clf
 
-def do_svc_cross_val():
+def do_svc_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print "\nRunning SVC..."
-    X, Y, scaler = get_preprocessed_train_data()
+    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
     clf = svc_cross_val(X, Y)
     return clf, scaler
 
@@ -153,9 +154,9 @@ def dnn_cross_val(X, Y, k=10):
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     return clf
 
-def do_dnn_cross_val():
+def do_dnn_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print "\nRunning Neural Network..."
-    X, Y, scaler = get_preprocessed_train_data()
+    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
     clf = dnn_cross_val(X, Y)
     return clf, scaler
 
@@ -181,9 +182,9 @@ def ensemble_cross_val(X, Y, k=10):
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     return clf
 
-def do_ensemble_cross_val():
+def do_ensemble_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print "\nRunning Ensemble Cross Val..."
-    X, Y, scaler = get_preprocessed_train_data()
+    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
     clf = ensemble_cross_val(X, Y)
     return clf, scaler
 

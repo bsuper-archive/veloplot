@@ -52,7 +52,8 @@ def pairwise_correlation(a, b):
 def featurize(df_seg):
     features = []
 
-    cols = ["Fx", "Fy", "Fz", "F_mag", "Mx", "My", "Mz", "M_mag", "AX", "AY", "AZ", "A_mag"]
+    cols = ["Fx", "Fy", "Fz", "F_mag", "Mx", "My", "Mz", "M_mag"]
+    # cols = ["Fx", "Fy", "Fz", "F_mag", "Mx", "My", "Mz", "M_mag", "AX", "AY", "AZ", "A_mag"]
     for col in cols:
         # statistical metrics
         features.append(np.max(df_seg[col]))
@@ -69,7 +70,9 @@ def featurize(df_seg):
 
     f_cols = ["Fx", "Fy", "Fz"]
     m_cols = ["Mx", "My", "Mz"]
-    a_cols = ["AX", "AY", "AZ"]
+    # a_cols = ["AX", "AY", "AZ"]
+    a_cols = []
+
     for col_set in [f_cols, m_cols, a_cols]:
         for pair in itertools.combinations(col_set, 2):
             features.append(pairwise_correlation(df_seg[pair[0]], df_seg[pair[1]])[0])
@@ -79,7 +82,8 @@ def featurize(df_seg):
 def get_feature_names():
     features = []
 
-    cols = ["Fx", "Fy", "Fz", "F_mag", "Mx", "My", "Mz", "M_mag", "AX", "AY", "AZ", "A_mag"]
+    cols = ["Fx", "Fy", "Fz", "F_mag", "Mx", "My", "Mz", "M_mag"]
+    # cols = ["Fx", "Fy", "Fz", "F_mag", "Mx", "My", "Mz", "M_mag", "AX", "AY", "AZ", "A_mag"]
     for col in cols:
         # statistical metrics
         features.append("{0}_max".format(col))
@@ -95,7 +99,9 @@ def get_feature_names():
 
     f_cols = ["Fx", "Fy", "Fz"]
     m_cols = ["Mx", "My", "Mz"]
-    a_cols = ["AX", "AY", "AZ"]
+    # a_cols = ["AX", "AY", "AZ"]
+    a_cols = []
+
     for col_set in [f_cols, m_cols, a_cols]:
         for pair in itertools.combinations(col_set, 2):
             features.append("{0}_corre".format(pair))

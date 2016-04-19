@@ -1,9 +1,0 @@
-%  Data file recorded 2016/4/18  12:7:20
-%  Stride Frequency         = [9, 9]
-%  Lead In /Lead Out        = 
-%  Deltas (Fractional)      = [0.25, 0.25, 0.25],[0.25, 0.25, 0.25]
-%  Phase                    = 32768
-%  Experiment.py 
-%  Motor Gains    = [100, 0, 100, 0, 0, 100, 0, 100, 0, 0]
-% Columns: 
-% time | Right Leg Pos | Left Leg Pos | Commanded Right Leg Pos | Commanded Left Leg Pos | DCR | DCL | GyroX | GyroY | GyroZ | AX | AY | AZ | RBEMF | LBEMF | VBatt | S1 | S2 | S3 | S4 | S5 | S6 | S7 | S8
