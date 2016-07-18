@@ -5,7 +5,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_17fecbe72e7d_key -iv $encrypted_17fecbe72e7d_iv
   -in deploy_key.enc -out deploy_key -d
 install:
-  - sudo apt-get install libzmq3-dev python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose
+  - sudo apt-get install libzmq-dev python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose
   - pip install seaborn runipy jupyter
 script: bash generate_ipynb.sh
 env:
