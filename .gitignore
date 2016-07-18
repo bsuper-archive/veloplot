@@ -6,3 +6,4 @@ notebooks/*.ipynb_checkpoints/*
 data/.DS_Store
 .ipynb_checkpoints/*
 tmp/*
+deploy_key
