@@ -7,3 +7,4 @@ data/.DS_Store
 .ipynb_checkpoints/*
 tmp/*
 deploy_key
+experiment_data/.ipynb_checkpoints/*
