@@ -89,4 +89,4 @@ def create_notebook(data_file, output_filename, overwrite=False):
     print("Generated iPython notebook {0} for {1}".format(output_filename, data_file))
 
 if __name__ == "__main__":
-    generate_notebooks(overwrite=False)
+    generate_notebooks(overwrite=True)
