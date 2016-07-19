@@ -2,7 +2,7 @@ import nbformat as nbf
 import fnmatch
 import os
 from runipy.notebook_runner import NotebookRunner
-from IPython.nbformat.current import read, write
+from nbformat import read, write
 
 def generate_notebooks(data_dir="experiment_data"):
     data_files = get_data_files(data_dir)
