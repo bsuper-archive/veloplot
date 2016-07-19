@@ -21,7 +21,6 @@ install:
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy matplotlib seaborn pandas scipy runipy jupyter
   - source activate test-environment
 script:
-  - rm -rf ~/.matplotlib
   - bash generate_ipynb.sh
 env:
   global:
