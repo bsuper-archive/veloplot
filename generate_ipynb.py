@@ -3,10 +3,6 @@ import fnmatch
 import os
 from runipy.notebook_runner import NotebookRunner
 
-# Suppress matplotlib UserWarnings about taking a while to load fonts.
-import warnings
-warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
-
 def generate_notebooks(data_dir="experiment_data", overwrite=False):
     """
     Creates an iPython notebook for all data files in data_dir. If overwrite is
