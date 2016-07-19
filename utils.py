@@ -245,7 +245,7 @@ def process_data(df, calibration, calibrate=True, k=50, leg_pos_in_radians=True)
 
     # torque calculation
     df["TorqueR"] = (df["DCR"] / 4096.0) * Kt * (df["VBatt"] - df["RBEMF"]) / RMotor # \Tau = Kt i_m x duty cycle
-    df["TorqueL"] = (df["DCR"] / 4096.0) * Kt * (df["VBatt"] - df["LBEMF"]) / RMotor # \Tau = Kt i_m x duty cycle
+    df["TorqueL"] = (df["DCL"] / 4096.0) * Kt * (df["VBatt"] - df["LBEMF"]) / RMotor # \Tau = Kt i_m x duty cycle
 
     # Motor Voltage, R, L
     df["VMotorR"] = df["VBatt"] * df["DCR"]
