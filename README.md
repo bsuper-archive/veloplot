@@ -1,4 +1,4 @@
-# veloplot
+# veloplot ![Travis-CI](https://travis-ci.org/bsuper/veloplot.svg?branch=master)
 Methods for Processing and Plotting Tactile Shell Velociroach Data
 
 ###Install Dependencies
