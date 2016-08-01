@@ -2,9 +2,9 @@
 close all
 clear all
 
-F = csvread('/Users/briansu/biomimetics/jgoldberg_computer_dump/Dropbox_data/trial5_force.csv',0,1);
+F = csvread('/Users/cemkoc/PROJECTS/research/veloplot/experiment_data/calibration/cal_1.csv',0,1);
 F = F(:,3:8);
-S = csvread('/Users/briansu/biomimetics/jgoldberg_computer_dump/Dropbox_data/trial5_tactile.csv');
+S = csvread('/Users/cemkoc/PROJECTS/research/veloplot/experiment_data/calibration/cal_1.csv');
 S = S(:,2:9);
 
 subplot(2,1,1)
