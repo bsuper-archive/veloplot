@@ -1,5 +1,0 @@
-# Python bytecode
-*.pyc
-
-# Automatically generated version string header
-version-string.h
