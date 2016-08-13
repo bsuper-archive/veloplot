@@ -2,10 +2,12 @@
 close all
 clear all
 
-F = csvread('/Users/cemkoc/PROJECTS/research/veloplot/experiment_data/calibration/cal_1.csv',0,1);
+F = csvread('/Users/Can/biomimetics/veloplot/experiment_data/calibration/cal_1.csv',0,1);
 F = F(:,3:8);
-S = csvread('/Users/cemkoc/PROJECTS/research/veloplot/experiment_data/calibration/cal_1.csv');
-S = S(:,2:9);
+
+S = csvread('/Users/Can/biomimetics/veloplot/experiment_data/calibration/cal_1_telemetry_no_header.txt');
+S = S(:,16:23);
+print()
 
 subplot(2,1,1)
 plot(F(28366:30000,1))
@@ -202,7 +204,7 @@ set(gca,'FontName','CMU Serif','FontSize',18,'XLim',[-bound,bound],'YLim',[-boun
 set(gcf,'Units','inches');
 set(gcf,'Position',[1 1 14 16]);
 pause(1);
-export_fig '/Users/jgoldberg/Downloads/josh_ms/figures/recovered_vs_measured' '-pdf' '-transparent'
+% export_fig '/Users/jgoldberg/Downloads/josh_ms/figures/recovered_vs_measured' '-pdf' '-transparent'
 
 
 %% FORCES only measure mean percent error on non zero samples
@@ -332,7 +334,7 @@ set(ha(1:4),'XTickLabel','');
 set(gcf,'Units','inches');
 set(gcf,'Position',[1 1 14 16]);
 pause(1);
-export_fig '/Users/jgoldberg/Downloads/josh_iros/figures/calibration_error_histogram' '-pdf' '-transparent'
+% export_fig '/Users/jgoldberg/Downloads/josh_iros/figures/calibration_error_histogram' '-pdf' '-transparent'
 
 
 %%
