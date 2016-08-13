@@ -1,0 +1,21 @@
+# IDE output during build & debug
+build
+dist
+debug
+obj
+*.cof
+*.hex
+*.map
+*.mcs
+*.pyc
+*.o
+*.d
+
+# IDE project files that are auto-updated
+nbproject/private
+nbproject/Makefile-default.mk
+nbproject/Makefile-genesis.properties
+nbproject/Makefile-impl.mk
+nbproject/Makefile-local-default.mk
+nbproject/Makefile-variables.mk
+nbproject/Package-default.bash
