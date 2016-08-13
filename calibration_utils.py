@@ -52,7 +52,7 @@ def least_squares_fit(M, S):
     S_24 = S_24.reshape((S_24.shape[0], 24))
     print "=== S_24 shape:{0} ===".format(S_24.shape)
 
-    #C is the vector we are solving the S_24 * C = M equation for.
+    #C is the vector we are solving for in the S_24 * C = M equation.
     C = lstsq(S_24, M)
     print "=== least squares fit DONE ==="
     print "=== C shape: {0} ===".format(C.shape)
