@@ -29,14 +29,21 @@ def drop_columns(df, cols):
     df = df.drop(dataframe.columns[cols], axis=1)
     return df
 
-def downsample(df, freq_high, freq_low):
-    diff = freq_high/freq_low
-
+def downsample_with_frequency(df, freq_high, freq_low):
+    batch_size = freq_high/freq_low
+    batch = nano_df.groupby(np.arange(len(nano_df))//batch_size)
+    out_shape = (len(batch), df.shape[1]-1)  # omit the time column from data
+    out = np.zeros(out_shape)
+    for i,data in batch:
+        out[i,:] = data.mean(axis=0).as_matrix(columns=["Fx","Fy","Fz","Mx","My","Mz"])
+    return out
 
 def align_two_streams(df_high, df_low, freq_high, freq_low, flick_high, flick_low):
     nano = df_high[flick_high:]
     telem = df_low[flick_low:]
-    nano = downsample(nano, freq_high, freq_low)
+    nano_np = downsample_with_frequency(nano, freq_high, freq_low)
+    telem_np = tdf.as_matrix(columns=["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"])
+    return nano_np, telem_np
 
 def least_squares_fit(M, S):
     S_squared = S * S
