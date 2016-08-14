@@ -283,9 +283,16 @@ def process_data(df, calibration, calibrate=True, k=50, leg_pos_in_radians=True)
 
 def process_data_files(data_file, calibration_file):
     calibration = loadmat(calibration_file)['N']
+    print "calibration_file shape: {0}".format(calibration.shape)
     data_csv = write_data_file_to_csv(data_file)
     df = pd.read_csv(data_csv)
     return process_data(df, calibration)
+
+def process_telemetry_with_C_matrix(data_file, C):
+    print "calibration matrix shape: {0}".format(C.shape)
+    data_csv = write_data_file_to_csv(data_file)
+    df = pd.read_csv(data_csv)
+    return process_data(df, C)
 
 #####################################
 # TESTING Code

@@ -9,15 +9,18 @@ from numpy.linalg import lstsq
 sns.set_style("whitegrid")
 sns.set_palette("bright")
 
+""" Reads a nano sensor file with the given filename
+    outputs a pandas dataframe object with the first
+    two columns dropped since we dont need them.
+"""
 def nanofile_to_dataframe(filename):
-    cols = ["drop", "drop", "time",
-            "Fx", "Fy", "Fz",
-            "Mx", "My", "Mz",
-            "Ax", "Ay", "Az"
-    ]
-    df = pd.read_csv(filename, names=cols)
-    drop_cols = [0,1,9,10,11]
-    return drop_cols(df, drop_cols)
+    column_names = ["drop", "drop", "time",
+                    "Fx", "Fy", "Fz",
+                    "Mx", "My", "Mz",
+                    "Ax", "Ay", "Az"]
+    df = pd.read_csv(filename, names=column_names)
+    cols = [0,1,9,10,11]
+    return drop_columns(df, cols)
 
 def telemetry_to_dataframe(filename):
     data_csv = utils.write_data_file_to_csv(filename)
@@ -26,12 +29,11 @@ def telemetry_to_dataframe(filename):
     return drop_columns(df, drop_cols)
 
 def drop_columns(df, cols):
-    df = df.drop(dataframe.columns[cols], axis=1)
-    return df
+    return df.drop(df.columns[cols], axis=1)
 
 def downsample_with_frequency(df, freq_high, freq_low):
     batch_size = freq_high/freq_low
-    batch = nano_df.groupby(np.arange(len(nano_df))//batch_size)
+    batch = df.groupby(np.arange(len(df))//batch_size)
     out_shape = (len(batch), df.shape[1]-1)  # omit the time column from data
     out = np.zeros(out_shape)
     for i,data in batch:
@@ -42,7 +44,7 @@ def align_two_streams(df_high, df_low, freq_high, freq_low, flick_high, flick_lo
     nano = df_high[flick_high:]
     telem = df_low[flick_low:]
     nano_np = downsample_with_frequency(nano, freq_high, freq_low)
-    telem_np = tdf.as_matrix(columns=["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"])
+    telem_np = telem.as_matrix(columns=["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"])
     return nano_np, telem_np
 
 def least_squares_fit(M, S):
@@ -60,7 +62,7 @@ def least_squares_fit(M, S):
     print "=== S_24 shape:{0} ===".format(S_24.shape)
 
     #C is the vector we are solving for in the S_24 * C = M equation.
-    C = lstsq(S_24, M)
+    C = lstsq(S_24, M)[0]
     print "=== least squares fit DONE ==="
     print "=== C shape: {0} ===".format(C.shape)
     return C
