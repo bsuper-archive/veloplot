@@ -282,14 +282,12 @@ def process_data(df, calibration, calibrate=True, k=50, leg_pos_in_radians=True)
 #####################################
 
 def process_data_files(data_file, calibration_file):
-    calibration = loadmat(calibration_file)['N']
-    print "calibration_file shape: {0}".format(calibration.shape)
+    calibration = loadmat(calibration_file)['C']
     data_csv = write_data_file_to_csv(data_file)
     df = pd.read_csv(data_csv)
     return process_data(df, calibration)
 
 def process_telemetry_with_C_matrix(data_file, C):
-    print "calibration matrix shape: {0}".format(C.shape)
     data_csv = write_data_file_to_csv(data_file)
     df = pd.read_csv(data_csv)
     return process_data(df, C)
@@ -299,8 +297,8 @@ def process_telemetry_with_C_matrix(data_file, C):
 #####################################
 
 if __name__ == "__main__":
-    CALIBRATION_FILE = "input/N_matrix_trial9.mat"
-    DATA_FILE = "crashing_into_wall/5/2016.03.06_19.18.30_trial_5_imudata.txt"
+    CALIBRATION_FILE = "calibration/out/cal_1_C_matrix.mat"
+    DATA_FILE = "experiment_data/telemetry_2016.07.16-17/2016.07.16_19.33.37_trial_imudata.txt"
     df = process_data_files(DATA_FILE, CALIBRATION_FILE)
     plot_columns(df, [["TorqueL", "TorqueR"], ["Left Leg Pos", "Right Leg Pos"], ["RBEMF", "LBEMF"], ["VMotorR", "VMotorL"], ["PowerR", "PowerL"], "VBatt", "AngleZ"], output_filename="basic.png")
     plot_columns(df, [["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"], "M_mag", ["AX", "AY", "AZ"], "A_mag", ["GyroX", "GyroY", "GyroZ"], "Gyro_mag"], output_filename="FMAG.png")
