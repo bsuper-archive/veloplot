@@ -63,6 +63,22 @@ def butterworth_filter(data):
     num, den = signal.butter(filter_order, Wn)
     return signal.lfilter(num, den, data, axis=0)
 
+def add_forces_moments(df, calibration, calibrate=True, k=50):
+    # force and moment
+    force_moment = calc_force_moment(df, calibration)
+    if calibrate:
+        force_moment = calibrate_to_first_k_samples(force_moment, k=k)
+    force_moment = butterworth_filter(force_moment)
+    M_cols = ["Fx", "Fy", "Fz", "Mx", "My", "Mz"]
+    for i in range(6):
+        df[M_cols[i]] = force_moment[:, i]
+
+    # force magnitude
+    df["F_mag"] = np.linalg.norm(np.array([df["Fx"], df["Fy"], df["Fz"]]), axis=0)
+    # moment magnitude
+    df["M_mag"] = np.linalg.norm(np.array([df["Mx"], df["My"], df["Mz"]]), axis=0)
+    return df
+
 #########################################
 # PLOTTING
 #########################################
@@ -257,23 +273,12 @@ def process_data(df, calibration, calibrate=True, k=50, leg_pos_in_radians=True)
         angleZ[i] = angleZ[i - 1] + df["GyroZ"][i] / 1000.
     df["AngleZ"] = angleZ
 
-    # force and moment
-    force_moment = calc_force_moment(df, calibration)
-    if calibrate:
-        force_moment = calibrate_to_first_k_samples(force_moment, k=k)
-    force_moment = butterworth_filter(force_moment)
-    M_cols = ["Fx", "Fy", "Fz", "Mx", "My", "Mz"]
-    for i in range(6):
-        df[M_cols[i]] = force_moment[:, i]
-
-    # force magnitude
-    df["F_mag"] = np.linalg.norm(np.array([df["Fx"], df["Fy"], df["Fz"]]), axis=0)
     # acceleration magnitude
     df["A_mag"] = np.linalg.norm(np.array([df["AX"], df["AY"], df["AZ"]]), axis=0)
-    # moment magnitude
-    df["M_mag"] = np.linalg.norm(np.array([df["Mx"], df["My"], df["Mz"]]), axis=0)
     # speed of rotation
     df["Gyro_mag"] = np.linalg.norm(np.array([df["GyroX"], df["GyroY"], df["GyroZ"]]), axis=0)
+
+    add_forces_moments(df, calibration, calibrate=calibrate, k=k)
 
     return df
 
