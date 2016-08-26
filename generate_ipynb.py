@@ -52,7 +52,7 @@ def create_notebook(data_file, output_filename, overwrite=False):
     # empty to run the cell, then change the cell after we ran it so that we
     # can run the iPython notebooks via jupyter.
     header_cell = lambda to_root_path_ : \
-    "CALIBRATION_FILE = '{0}input/N_matrix_trial9.mat'\n" \
+    "CALIBRATION_FILE = '{0}calibration/out/cal_1_C_matrix.mat'\n" \
     "DATA_FILE = '{0}{1}'\n" \
     "utils.print_header(DATA_FILE)".format(to_root_path_, data_file)
 
@@ -89,4 +89,4 @@ def create_notebook(data_file, output_filename, overwrite=False):
     print("Generated iPython notebook {0} for {1}".format(output_filename, data_file))
 
 if __name__ == "__main__":
-    generate_notebooks(overwrite=False)
+    generate_notebooks(overwrite=True)

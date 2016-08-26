@@ -151,7 +151,7 @@ def segment_df(df, segment_begin, segment_end, output_dir="segments/", output_fi
     activity_seg.to_csv(output_dir + "act-" + exp_num + ".csv")
     control_seg2.to_csv(output_dir + "ctl2-" + exp_num + ".csv")
 
-def segment_datafiles(datafile_folder, calibration_file="input/N_matrix_trial9.mat"):
+def segment_datafiles(datafile_folder, calibration_file="calibration/out/cal_1_C_matrix.mat"):
     print glob.glob(datafile_folder + "*")
     for f in glob.glob(datafile_folder + "*"):
         do_segmentation(f, calibration_file, args.output_dir)
@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
     if args.file != 'none':
         print "Segmenting Data File: {0}".format(args.file)
-        do_segmentation(args.file, calibration_file="input/N_matrix_trial9.mat", output_dir=args.output_dir)
+        do_segmentation(args.file, calibration_file="calibration/out/cal_1_C_matrix.mat", output_dir=args.output_dir)
     else:
         print "Segmenting Experiment Data Files...\n"
         input_dir = args.input_dir
