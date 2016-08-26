@@ -3,6 +3,7 @@ import fnmatch
 import os
 from runipy.notebook_runner import NotebookRunner
 
+
 def generate_notebooks(data_dir="experiment_data", overwrite=False):
     """
     Creates an iPython notebook for all data files in data_dir. If overwrite is
@@ -12,6 +13,7 @@ def generate_notebooks(data_dir="experiment_data", overwrite=False):
     for data_file in data_files:
         output_filename = data_file.split(".txt")[0] + ".ipynb"
         create_notebook(data_file, output_filename, overwrite=overwrite)
+
 
 def get_data_files(data_dir="experiment_data"):
     """
@@ -23,6 +25,7 @@ def get_data_files(data_dir="experiment_data"):
             matches.append(os.path.join(root, filename))
     return matches
 
+
 def create_notebook(data_file, output_filename, overwrite=False):
     """
     Creates the standard tactile velociroach iPython notebook from data_file and
@@ -30,10 +33,12 @@ def create_notebook(data_file, output_filename, overwrite=False):
     """
     # Don't overwrite existing iPython notebooks if overwrite is false.
     if not overwrite and os.path.isfile(output_filename):
-        print("Found {0} so skipping generating notebook for {1}".format(output_filename, data_file))
+        print("Found {0} so skipping generating notebook for {1}".format(
+            output_filename, data_file))
         return
 
-    print("Generating iPython notebook {0} for {1}...".format(output_filename, data_file))
+    print("Generating iPython notebook {0} for {1}...".format(output_filename,
+                                                              data_file))
 
     num_dirs_to_root = data_file.count('/')
     to_root_path = '../' * num_dirs_to_root
@@ -81,12 +86,15 @@ def create_notebook(data_file, output_filename, overwrite=False):
     r2 = NotebookRunner(notebook)
     r2.run_notebook()
     # See comment above header_cell.
-    r2.nb['worksheets'][0]['cells'][1] = nbf.v3.new_code_cell(header_cell(to_root_path))
+    r2.nb['worksheets'][0]['cells'][1] = nbf.v3.new_code_cell(
+        header_cell(to_root_path))
     nbf.write(r2.nb, output_filename, version=3)
     notebook = nbf.read(output_filename, 3)
     nbf.write(notebook, output_filename, version=4)
 
-    print("Generated iPython notebook {0} for {1}".format(output_filename, data_file))
+    print("Generated iPython notebook {0} for {1}".format(output_filename,
+                                                          data_file))
+
 
 if __name__ == "__main__":
     generate_notebooks(overwrite=False)
