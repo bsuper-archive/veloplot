@@ -273,11 +273,11 @@ def process_data(df,
     # i_m = (VBatt - BEMF)/R
     # V_m is just VBatt
     df["PowerR"] = np.abs(
-        (df["DCR"] / 4096.0) * df["VBatt"] *
-        (df["VBatt"] - df["RBEMF"]) / RMotor)  # P = V_m i_m x duty cycle
+        (df["DCR"] / 4096.0) * df["VBatt"] * (df["VBatt"] - df["RBEMF"]) /
+        RMotor)  # P = V_m i_m x duty cycle
     df["PowerL"] = np.abs(
-        (df["DCL"] / 4096.0) * df["VBatt"] *
-        (df["VBatt"] - df["LBEMF"]) / RMotor)  # P = V_m i_m x duty cycle
+        (df["DCL"] / 4096.0) * df["VBatt"] * (df["VBatt"] - df["LBEMF"]) /
+        RMotor)  # P = V_m i_m x duty cycle
 
     # energy calculation
     energy = np.zeros(df.shape[0])
