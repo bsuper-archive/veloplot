@@ -5,6 +5,8 @@ import numpy as np
 import seaborn as sns
 import utils
 from numpy.linalg import lstsq
+import matplotlib.pyplot as plt
+import scipy
 
 sns.set_style("whitegrid")
 sns.set_palette("bright")
@@ -62,6 +64,10 @@ def align_two_streams(df_high, df_low, freq_high, freq_low, flick_high,
                       flick_low):
     """
     Args:
+        df_high: high frequency dataframe
+        df_low: low frequency dataframe
+        freq_high: high frequency value
+        freq_low: low frequency value
         flick_high: index of the flick in the high freq datastream
         flick_low: index of the flick in the low freq datastream
     Returns:
@@ -72,6 +78,12 @@ def align_two_streams(df_high, df_low, freq_high, freq_low, flick_high,
     nano_np = downsample_with_frequency(nano, freq_high, freq_low)
     telem_np = telem.as_matrix(
         columns=["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"])
+
+    if (nano_np.shape[0] >= telem_np.shape[0]):
+        nano_np = nano_np[0:telem_np.shape[0], :]
+    else:
+        telem_np = telem_np[0:nano_np[0], :]
+
     return nano_np, telem_np
 
 
@@ -102,3 +114,71 @@ def least_squares_fit(M, S):
     print "=== least squares fit DONE ==="
     print "=== C shape: {0} ===".format(C.shape)
     return C
+
+
+def calibration_matrix_least_squares(df_high, df_low, freq_high, freq_low):
+    """
+    Return the C calibration matrix as numpy array using two different sensor
+    measurements and by fitting a least squares fit.
+    Args:
+        df_high:
+        df_low:
+        freq_high:
+        freq_low:
+    Returns:
+        C calibration matrix as numpy array
+    """
+    return
+
+
+def plot_force_error(shell,
+              ati,
+              columns=["Fx", "Fy", "Fz"],
+              display=True,
+              save_figure=False,
+              output_dir="/data/",
+              output_filename="force_error_plots.png"):
+    """
+    Plot training/validation/test errors on a graph.
+    Args:
+        shell: predicted shell sensor forces using calibration matrix as classifier
+        ati: ground truth sensor output using ATI Nano sensor
+    """
+
+    fig, axarr = plt.subplots(len(columns))
+    for i in xrange(len(columns)):
+        axarr[i].plot(shell[columns[i]], label='Shell Sensor')
+        axarr[i].set_ylabel("Force (N)")
+        axarr[i].plot(ati[columns[i]], label='ATI Nano')
+        axarr[i].set_title(columns[i])
+        axarr[i].legend(loc='upper right')
+
+    fig.set_size_inches(12, 10)
+    plt.tight_layout()
+
+    if display:
+        plt.show()
+
+    if save_figure:
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        print "Saving image as", output_dir + output_filename
+        figure.savefig(output_dir + output_filename, dpi=350)
+        print "Image saved."
+
+
+def calculate_mse_error(shell_df, nano_df, columns=["Fx", "Fy", "Fz"]):
+    """
+    Calculates MSE loss of provided columns.
+    Args:
+        shell_df: shell sensor prediction value
+        nano_df: ATI Nano sensor ground truth value
+    Returns:
+        losses dataframe of columns and MSE loss as values
+    """
+
+    delta = shell_df[columns] - nano_df[columns]
+    delta = delta.dropna(axis=0)
+    delta = delta**2
+    losses = delta.sum(axis=0) / delta.shape[0]
+    return losses
