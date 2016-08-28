@@ -128,7 +128,7 @@ def calibration_matrix_least_squares(df_high, df_low, freq_high, freq_low):
     Returns:
         C calibration matrix as numpy array
     """
-    return
+    return "NOT YET IMPLEMENTED"
 
 
 def plot_force_error(shell,
