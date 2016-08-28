@@ -82,7 +82,7 @@ def align_two_streams(df_high, df_low, freq_high, freq_low, flick_high,
     if (nano_np.shape[0] >= telem_np.shape[0]):
         nano_np = nano_np[0:telem_np.shape[0], :]
     else:
-        telem_np = telem_np[0:nano_np[0], :]
+        telem_np = telem_np[0:nano_np.shape[0], :]
 
     return nano_np, telem_np
 
