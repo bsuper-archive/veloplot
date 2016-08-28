@@ -16,9 +16,10 @@ import utils
 import os
 
 DATA_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/data/"
-CTL_FILES = DATA_FOLDER + "ctl*.csv" # No touch data
-ACT_FILES = DATA_FOLDER + "act*.csv" # Touch data
-CALIBRATION_FILE = "input/N_matrix_trial9.mat"
+CTL_FILES = DATA_FOLDER + "ctl*.csv"  # No touch data
+ACT_FILES = DATA_FOLDER + "act*.csv"  # Touch data
+CALIBRATION_FILE = "calibration/out/cal_1_C_matrix.mat"
+
 
 def preprocess(features, labels):
     scaler = StandardScaler().fit(features)
@@ -27,40 +28,70 @@ def preprocess(features, labels):
                                 random_state=random.randint(0, 1000))
     return features, labels, scaler
 
+
 def get_preprocessed_train_data(ctl_files=CTL_FILES, act_files=ACT_FILES):
     features, labels = featurizer.get_feature_vector(ctl_files, act_files)
     features, labels, scaler = preprocess(features, labels)
     return features, labels, scaler
 
-def get_test_data(test_file="test/sliding11.txt", calibration_file=CALIBRATION_FILE):
+
+def get_test_data(test_file="test/sliding11.txt",
+                  calibration_file=CALIBRATION_FILE):
     df = utils.process_data_files(test_file, calibration_file)
     df_segs = featurizer.segment(df)
-    test_data = np.array(map(lambda df_seg: featurizer.featurize(df_seg), df_segs))
+    test_data = np.array(
+        map(lambda df_seg: featurizer.featurize(df_seg), df_segs))
     return test_data, df, df_segs
 
+
 def clf_predict(clf, test_data, ctl_files=CTL_FILES, act_files=ACT_FILES):
-    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
+    X, Y, scaler = get_preprocessed_train_data(
+        ctl_files=ctl_files, act_files=act_files)
     clf.fit(X, Y)
     test_data = scaler.transform(test_data)
     return clf.predict(test_data)
 
-def clf_predict_and_visualize(clf, test_data, df, df_segs, \
-                                columns=[["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"], "M_mag", ["AX", "AY", "AZ"], "A_mag", ["GyroX", "GyroY", "GyroZ"], "Gyro_mag"], \
-                                display=True, save_figure=False, output_dir="out/", output_filename="preds_vis.png", ctl_files=CTL_FILES, act_files=ACT_FILES):
-    preds = clf_predict(clf, test_data, ctl_files=ctl_files, act_files=act_files)
+
+def clf_predict_and_visualize(
+        clf,
+        test_data,
+        df,
+        df_segs,
+        columns=[["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"], "M_mag",
+                 ["AX", "AY", "AZ"], "A_mag", ["GyroX", "GyroY", "GyroZ"],
+                 "Gyro_mag"],
+        display=True,
+        save_figure=False,
+        output_dir="out/",
+        output_filename="preds_vis.png",
+        ctl_files=CTL_FILES,
+        act_files=ACT_FILES):
+    preds = clf_predict(
+        clf, test_data, ctl_files=ctl_files, act_files=act_files)
     color_intervals = []
     for i in xrange(len(df_segs)):
         if preds[i] == 1:
-            color_intervals.append((min(df_segs[i]["time"]), max(df_segs[i]["time"])))
-    utils.plot_columns(df, columns, display=display, save_figure=save_figure, output_dir=output_dir, output_filename=output_filename, color_intervals=color_intervals)
+            color_intervals.append(
+                (min(df_segs[i]["time"]), max(df_segs[i]["time"])))
+    utils.plot_columns(
+        df,
+        columns,
+        display=display,
+        save_figure=save_figure,
+        output_dir=output_dir,
+        output_filename=output_filename,
+        color_intervals=color_intervals)
     return preds
 
 #########################################
 # RANDOM FORESTS
 #########################################
 
+
 def random_forests():
-    return RandomForestClassifier(n_estimators=200, max_features='sqrt', oob_score=True)
+    return RandomForestClassifier(
+        n_estimators=200, max_features='sqrt', oob_score=True)
+
 
 def random_forests_cross_val(X, Y, k=10):
     clf = random_forests()
@@ -75,10 +106,12 @@ def random_forests_cross_val(X, Y, k=10):
     print '\n'.join(map(str, sorted_feature_importances))
     return clf
 
+
 def do_random_forests_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print ctl_files
     print "\nRunning Random Forests..."
-    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
+    X, Y, scaler = get_preprocessed_train_data(
+        ctl_files=ctl_files, act_files=act_files)
     clf = random_forests_cross_val(X, Y)
     return clf, scaler
 
@@ -86,8 +119,10 @@ def do_random_forests_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
 # GRADIENT BOOSTED TREES
 #########################################
 
+
 def xgb_trees():
     return GradientBoostingClassifier(n_estimators=200, max_features='sqrt')
+
 
 def xgb_trees_cross_val(X, Y, k=10):
     clf = xgb_trees()
@@ -101,9 +136,11 @@ def xgb_trees_cross_val(X, Y, k=10):
     print '\n'.join(map(str, sorted_feature_importances))
     return clf
 
+
 def do_xgb_trees_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print "\nRunning XGB Trees..."
-    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
+    X, Y, scaler = get_preprocessed_train_data(
+        ctl_files=ctl_files, act_files=act_files)
     clf = xgb_trees_cross_val(X, Y)
     return clf, scaler
 
@@ -111,20 +148,24 @@ def do_xgb_trees_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
 # SVM
 #########################################
 
+
 def svc():
     return SVC(probability=True)
+
 
 def svc_cross_val(X, Y, k=10):
     clf = svc()
     cv_scores = cross_val_score(clf, X, Y, cv=k)
     print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean()
     print "CV Scores: ", ", ".join(map(str, cv_scores))
-    clf = clf.fit(X,Y)
+    clf = clf.fit(X, Y)
     return clf
+
 
 def do_svc_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print "\nRunning SVC..."
-    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
+    X, Y, scaler = get_preprocessed_train_data(
+        ctl_files=ctl_files, act_files=act_files)
     clf = svc_cross_val(X, Y)
     return clf, scaler
 
@@ -132,19 +173,31 @@ def do_svc_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
 # NEURAL NETWORK
 #########################################
 
+
 def dnn(nn_lr=0.1, nn_steps=2000):
     def relu_dnn(X, y, hidden_units=[100, 100]):
-        features = skflow.ops.dnn(X, hidden_units=hidden_units,
-          activation=tf.nn.relu)
+        features = skflow.ops.dnn(X,
+                                  hidden_units=hidden_units,
+                                  activation=tf.nn.relu)
         return skflow.models.logistic_regression(features, y)
-    clf = skflow.TensorFlowEstimator(model_fn=relu_dnn, n_classes=2,
-        steps=nn_steps, learning_rate=nn_lr, batch_size=100)
+
+    clf = skflow.TensorFlowEstimator(
+        model_fn=relu_dnn,
+        n_classes=2,
+        steps=nn_steps,
+        learning_rate=nn_lr,
+        batch_size=100)
     return clf
+
 
 def dnn_cross_val(X, Y, k=10):
     clf = dnn()
     cv_scores = []
-    for train_indices, test_indices in KFold(X.shape[0], n_folds=k, shuffle=True, random_state=random.randint(0, 1000)):
+    for train_indices, test_indices in KFold(
+            X.shape[0],
+            n_folds=k,
+            shuffle=True,
+            random_state=random.randint(0, 1000)):
         X_train, X_test = X[train_indices], X[test_indices]
         Y_train, Y_test = Y[train_indices], Y[test_indices]
         clf.fit(X_train, Y_train)
@@ -154,9 +207,11 @@ def dnn_cross_val(X, Y, k=10):
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     return clf
 
+
 def do_dnn_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print "\nRunning Neural Network..."
-    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
+    X, Y, scaler = get_preprocessed_train_data(
+        ctl_files=ctl_files, act_files=act_files)
     clf = dnn_cross_val(X, Y)
     return clf, scaler
 
@@ -164,15 +219,25 @@ def do_dnn_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
 # ENSEMBLE CLASSIFIER
 #########################################
 
+
 def ensemble_clf():
-    return VotingClassifier(estimators=[
-       ('dnn', dnn()), ('rf', random_forests()), ('xgb', xgb_trees()), ('svm', svc())],
-       voting='soft', weights=[1,1,1,1])
+    return VotingClassifier(
+        estimators=[
+            ('dnn', dnn()), ('rf', random_forests()), ('xgb', xgb_trees()),
+            ('svm', svc())
+        ],
+        voting='soft',
+        weights=[1, 1, 1, 1])
+
 
 def ensemble_cross_val(X, Y, k=10):
     clf = ensemble_clf()
     cv_scores = []
-    for train_indices, test_indices in KFold(X.shape[0], n_folds=k, shuffle=True, random_state=random.randint(0, 1000)):
+    for train_indices, test_indices in KFold(
+            X.shape[0],
+            n_folds=k,
+            shuffle=True,
+            random_state=random.randint(0, 1000)):
         X_train, X_test = X[train_indices], X[test_indices]
         Y_train, Y_test = Y[train_indices], Y[test_indices]
         clf.fit(X_train, Y_train)
@@ -182,11 +247,14 @@ def ensemble_cross_val(X, Y, k=10):
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     return clf
 
+
 def do_ensemble_cross_val(ctl_files=CTL_FILES, act_files=ACT_FILES):
     print "\nRunning Ensemble Cross Val..."
-    X, Y, scaler = get_preprocessed_train_data(ctl_files=ctl_files, act_files=act_files)
+    X, Y, scaler = get_preprocessed_train_data(
+        ctl_files=ctl_files, act_files=act_files)
     clf = ensemble_cross_val(X, Y)
     return clf, scaler
+
 
 if __name__ == "__main__":
     do_random_forests_cross_val()

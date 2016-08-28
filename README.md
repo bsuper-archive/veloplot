@@ -1,4 +1,4 @@
-# veloplot ![Travis-CI](https://travis-ci.org/bsuper/veloplot.svg?branch=master)
+# veloplot [![Travis-CI](https://travis-ci.org/bsuper/veloplot.svg?branch=master)](https://travis-ci.org/bsuper/veloplot)
 Methods for Processing and Plotting Tactile Shell Velociroach Data
 
 ###Install Dependencies
@@ -40,7 +40,7 @@ Go to this [site](https://www.tensorflow.org/versions/r0.7/get_started/os_setup.
 ### Files
 
 #### [utils.py](https://github.com/bsuper/veloplot/blob/master/utils.py)
-`utils.process_data_files(data_file, calibration_file)` takes in a telemetry data_file (.txt) and a calibration file (e.g. input/N_matrix_trial9.mat) and returns a Pandas DataFrame, a Python dictionary-like object, with variables:
+`utils.process_data_files(data_file, calibration_file)` takes in a telemetry data_file (.txt) and a calibration file (e.g. calibration/out/cal_1_C_matrix.mat) and returns a Pandas DataFrame, a Python dictionary-like object, with variables:
 
 `['time', 'Right Leg Pos', 'Left Leg Pos', 'Commanded Right Leg Pos',
        'Commanded Left Leg Pos', 'DCR', 'DCL', 'GyroX', 'GyroY', 'GyroZ',
@@ -54,7 +54,7 @@ These variables are accessible in the following fashion.
 ```python
 import utils
 DATA_FILE = "input/sliding9.txt"
-CALIBRATION_FILE = "input/N_matrix_trial9.mat"
+CALIBRATION_FILE = "calibration/out/cal_1_C_matrix.mat"
 df = utils.process_data_files(DATA_FILE, CALIBRATION_FILE)
 df['Fx']
 ```
@@ -72,7 +72,7 @@ Plot columns, display it, and save to out/basic.png
 ```python
 import utils
 DATA_FILE = "input/sliding9.txt"
-CALIBRATION_FILE = "input/N_matrix_trial9.mat"
+CALIBRATION_FILE = "calibration/out/cal_1_C_matrix.mat"
 df = utils.process_data_files(DATA_FILE, CALIBRATION_FILE)
 utils.plot_columns(df, [["TorqueL", "TorqueR"], ["Left Leg Pos", "Right Leg Pos"], ["RBEMF", "LBEMF"], ["VMotorR", "VMotorL"], ["PowerR", "PowerL"], "VBatt", "AngleZ"], display=True, save_figure=True, output_dir="out/", output_filename="basic.png")
 ```

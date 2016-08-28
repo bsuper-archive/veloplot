@@ -8,3 +8,4 @@ data/.DS_Store
 tmp/*
 deploy_key
 experiment_data/.ipynb_checkpoints/*
+out/*
