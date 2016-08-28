@@ -1,11 +1,7 @@
-venv/*
+venv
 *.pyc
-notebooks/*.ipynb_checkpoints/*
 .DS_Store
-*/.DS_Store
-data/.DS_Store
-.ipynb_checkpoints/*
-tmp/*
+.ipynb_checkpoints
+tmp
 deploy_key
-experiment_data/.ipynb_checkpoints/*
 out/*
