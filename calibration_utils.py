@@ -82,7 +82,7 @@ def align_two_streams(df_high, df_low, freq_high, freq_low, flick_high,
     if (nano_np.shape[0] >= telem_np.shape[0]):
         nano_np = nano_np[0:telem_np.shape[0], :]
     else:
-        telem_np = telem_np[0:nano_np[0], :]
+        telem_np = telem_np[0:nano_np.shape[0], :]
 
     return nano_np, telem_np
 
@@ -128,7 +128,7 @@ def calibration_matrix_least_squares(df_high, df_low, freq_high, freq_low):
     Returns:
         C calibration matrix as numpy array
     """
-    return
+    return "NOT YET IMPLEMENTED"
 
 
 def plot_force_error(shell,
