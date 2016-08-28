@@ -262,8 +262,8 @@ def process_data(df,
     # BEMF volts = (15K)/(47K) * Vm + vref/2 - pidObjs[i].inputOffset
     # RBEMF = -data[:,13]*vdivide*vref/1023.0
     # LBEMF = -data[:,14]*vdivide*vref/1023.0
-    df["RBEMF"] = df[
-        "RBEMF"] * vref / 1024.0 / vgain  # scale A/D to 0 to 3.3 V range and undo diff amp gain
+    # scale A/D to 0 to 3.3 V range and undo diff amp gain
+    df["RBEMF"] = df["RBEMF"] * vref / 1024.0 / vgain
     df["LBEMF"] = df["LBEMF"] * vref / 1024.0 / vgain
 
     # Battery Voltage in volts
