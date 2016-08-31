@@ -341,8 +341,8 @@ HEADER = "% This telemetry_file was generated from streaming.\n%\n%\n%\n%\n%\n%\
 COLUMNS = "% time | Right Leg Pos | Left Leg Pos | Commanded Right Leg Pos | Commanded Left Leg Pos | DCR | DCL | GyroX | GyroY | GyroZ | AX | AY | AZ | RBEMF | LBEMF | VBatt | S1 | S2 | S3 | S4 | S5 | S6 | S7 | S8\n"
 
 
-def convert_streaming_output_to_telemetry_file(streaming_file_path,
-                     outfile="telemetry_from_streaming.txt"):
+def convert_streaming_output_to_telemetry_file(
+        streaming_file_path, outfile="telemetry_from_streaming.txt"):
     time = '0'
     with open(streaming_file_path, 'r') as streaming_file, open(
             outfile, "w") as telemetry_file:
