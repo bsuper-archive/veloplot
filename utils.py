@@ -331,6 +331,33 @@ def process_telemetry_with_C_matrix(data_file, C):
     return process_data(df, C)
 
 #####################################
+# Streaming Formatting Code
+#####################################
+
+TIME_PATTERN = re.compile(r"time = ([0-9.]+)")
+S_PATTERN = re.compile("\[(.*)\]")
+
+HEADER = "% This telemetry_file was generated from streaming.\n%\n%\n%\n%\n%\n%\n"
+COLUMNS = "% time | Right Leg Pos | Left Leg Pos | Commanded Right Leg Pos | Commanded Left Leg Pos | DCR | DCL | GyroX | GyroY | GyroZ | AX | AY | AZ | RBEMF | LBEMF | VBatt | S1 | S2 | S3 | S4 | S5 | S6 | S7 | S8\n"
+
+
+def format_streaming(streaming_file_path,
+                     outfile="telemetry_from_streaming.txt"):
+    time = '0'
+    with open(streaming_file_path, 'r') as streaming_file, open(
+            outfile, "w") as telemetry_file:
+        telemetry_file.write(HEADER)
+        telemetry_file.write(COLUMNS)
+        for line in streaming_file:
+            if TIME_PATTERN.match(line):
+                time = TIME_PATTERN.match(line).group(1)
+            elif S_PATTERN.match(line):
+                s = S_PATTERN.match(line).group(1).split()
+                # Assign 0 to values between time and the S1,S2,...S8.
+                output_line = ",".join([time] + ['0'] * 15 + s) + "\n"
+                telemetry_file.write(output_line)
+
+#####################################
 # TESTING Code
 #####################################
 
