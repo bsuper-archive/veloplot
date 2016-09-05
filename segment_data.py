@@ -9,7 +9,7 @@ import glob
 import argparse
 
 parser = argparse.ArgumentParser(
-    description='Segments each data into three parts: no-contac, contact,\
+    description='Segments each data into three parts: no-contact, contact,\
      no-contact. Saves them into a data folder.')
 parser.add_argument(
     '--input_dir',
