@@ -5,6 +5,7 @@
 %
 %
 %
+%
 % time | Right Leg Pos | Left Leg Pos | Commanded Right Leg Pos | Commanded Left Leg Pos | DCR | DCL | GyroX | GyroY | GyroZ | AX | AY | AZ | RBEMF | LBEMF | VBatt | S1 | S2 | S3 | S4 | S5 | S6 | S7 | S8
 0.005157,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2054,2100,2380,2628,2372,2175,2128,2208
 0.010651,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2048,2099,2378,2625,2371,2174,2125,2208
