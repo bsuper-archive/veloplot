@@ -1,12 +1,14 @@
-import pandas as pd
-import numpy as np
-from scipy.io import loadmat
-import matplotlib.pyplot as plt
-import seaborn as sns
-import utils
-import os
-import glob
 import argparse
+import glob
+import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy.io import loadmat
+import seaborn as sns
+
+import utils
 
 parser = argparse.ArgumentParser(
     description='Segments each data into three parts: no-contact, contact,\
