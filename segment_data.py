@@ -23,73 +23,6 @@ parser.add_argument(
     '--file', default='none', help='Path to the file you want to segment')
 args = parser.parse_args()
 
-sns.set_style("whitegrid")
-sns.set_palette("bright")
-
-titles = {
-    "AX": "Accelerations",
-    "AY": "Accelerations",
-    "AZ": "Accelerations",
-    "A_mag": "Magnitude of Accelerations",
-    "Fx": "Forces",
-    "Fy": "Forces",
-    "Fz": "Forces",
-    "F_mag": "Magnitude of Forces",
-    "Mx": "Moments",
-    "My": "Moments",
-    "Mz": "Moments",
-    "M_mag": "Magnitude of Moments",
-    "TorqueL": "Torques",
-    "TorqueR": "Torques",
-    "Right Leg Pos": "Leg Positions",
-    "Left Leg Pos": "Leg Positions",
-    "RBEMF": "Back EMF",
-    "LBEMF": "Back EMF",
-    "VMotorR": "VMotor",
-    "VMotorL": "VMotor",
-    "PowerR": "Power",
-    "PowerL": "Power",
-    "GyroX": "Gyro",
-    "GyroY": "Gyro",
-    "GyroZ": "Gyro",
-    "Gyro_mag": "Speed of rotation",
-    "Energy": "Energy",
-    "VBatt": "VBatt",
-    "AngleZ": "Anglez"
-}
-
-ylabels = {
-    "AX": "Acceleration m/s^2",
-    "AY": "Acceleration m/s^2",
-    "AZ": "Acceleration m/s^2",
-    "A_mag": "Acceleration m/s^2",
-    "Fx": "Force (N)",
-    "Fy": "Force (N)",
-    "Fz": "Force (N)",
-    "F_mag": "Force (N)",
-    "Mx": "Moment (mN * m)",
-    "My": "Moment (mN * m)",
-    "Mz": "Moment (mN * m)",
-    "M_mag": "Moment (mN * m)",
-    "TorqueL": r'$\tau$ (mN * m)',
-    "TorqueR": r'$\tau$ (mN * m)',
-    "Right Leg Pos": "leg position (rad)",
-    "Left Leg Pos": "leg position (rad)",
-    "RBEMF": r'$\frac{kg * m^2}{A * s^2}$',
-    "LBEMF": r'$\frac{kg * m^2}{A * s^2}$',
-    "VMotorR": "VMotor",
-    "VMotorL": "VMotor",
-    "PowerR": "Power",
-    "PowerL": "Power",
-    "GyroX": "degrees/s",
-    "GyroY": "degrees/s",
-    "GyroZ": "degrees/s",
-    "Gyro_mag": "degrees/s",
-    "Energy": "Energy",
-    "VBatt": "VBatt",
-    "AngleZ": "Anglez"
-}
-
 
 def segment_data_gui(df,
                      columns=[["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"],
@@ -126,13 +59,13 @@ def segment_data_gui(df,
         if type(columns[i]) == list:
             for col in columns[i]:
                 axarr[i].plot(df["time"], df[col], label=col, picker=1)
-                axarr[i].set_ylabel(ylabels[col])
-                axarr[i].set_title(titles[col])
+                axarr[i].set_ylabel(utils.ylabels[col])
+                axarr[i].set_title(utils.titles[col])
         else:
             axarr[i].plot(
                 df["time"], df[columns[i]], label=columns[i], picker=1)
-            axarr[i].set_ylabel(ylabels[columns[i]])
-            axarr[i].set_title(titles[columns[i]])
+            axarr[i].set_ylabel(utils.ylabels[columns[i]])
+            axarr[i].set_title(utils.titles[columns[i]])
         axarr[i].set_xlim([0, df["time"].max()])
         axarr[i].set_xlabel("Time (s)")
         axarr[i].legend(loc='upper right')
