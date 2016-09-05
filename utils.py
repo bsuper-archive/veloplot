@@ -337,7 +337,7 @@ def process_telemetry_with_C_matrix(data_file, C):
 TIME_PATTERN = re.compile(r"time = ([0-9.]+)")
 S_PATTERN = re.compile("\[(.*)\]")
 
-HEADER = "% This telemetry_file was generated from streaming.\n%\n%\n%\n%\n%\n%\n"
+HEADER = "% This telemetry_file was generated from streaming.\n%\n%\n%\n%\n%\n%\n%\n"
 COLUMNS = "% time | Right Leg Pos | Left Leg Pos | Commanded Right Leg Pos | Commanded Left Leg Pos | DCR | DCL | GyroX | GyroY | GyroZ | AX | AY | AZ | RBEMF | LBEMF | VBatt | S1 | S2 | S3 | S4 | S5 | S6 | S7 | S8\n"
 
 
