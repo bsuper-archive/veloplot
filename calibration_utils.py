@@ -129,7 +129,8 @@ def calibration_matrix_least_squares(df_high, df_low, freq_high, freq_low):
         C calibration matrix as numpy array
     """
     flick_high = df_high['Fz'][:100000].apply(abs).argmax(axis=0)
-    flick_low = utils.add_forces_moments(df_low, C)['Fz'][:5000].apply(abs).argmax(axis=0)
+    flick_low = utils.add_forces_moments(
+        df_low, C)['Fz'][:5000].apply(abs).argmax(axis=0)
 
     print "flick high index: {0}".format(flick_high)
     print "flick low index: {0}".format(flick_low)
@@ -138,6 +139,7 @@ def calibration_matrix_least_squares(df_high, df_low, freq_high, freq_low):
                              flick_low)
     C = least_squares_fit(M, S)
     return C
+
 
 def plot_force_error(shell,
                      ati,

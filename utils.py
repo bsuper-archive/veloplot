@@ -39,55 +39,6 @@ def write_data_file_to_csv(
         out_f.write("".join(data))
     return output_dir + output_filename
 
-
-def calc_force_moment(df, calibration):
-    """
-    Calculates force moment
-
-    df - Pandas DataFrame from calling pd.read_csv(data_file)
-    calibration - calibration matrix [shape - (24, 6)]
-
-    S is 24 x (# num data)
-    """
-    S = []
-    sensor_columns = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"]
-    for col in sensor_columns:
-        S.extend([df[col], df[col]**2, df[col]**3])
-    S = np.swapaxes(S, 0, 1)
-    force_moment = np.dot(S, calibration)
-    return force_moment
-
-
-def calibrate_to_first_k_samples(data, k=50):
-    offset = np.mean(data[:k, :], axis=0)
-    return data - offset
-
-
-def butterworth_filter(data):
-    Wn = 20. / 1000
-    filter_order = 4
-    num, den = signal.butter(filter_order, Wn)
-    return signal.lfilter(num, den, data, axis=0)
-
-
-def add_forces_moments(df, calibration, calibrate=True, k=50):
-    # force and moment
-    force_moment = calc_force_moment(df, calibration)
-    if calibrate:
-        force_moment = calibrate_to_first_k_samples(force_moment, k=k)
-    force_moment = butterworth_filter(force_moment)
-    M_cols = ["Fx", "Fy", "Fz", "Mx", "My", "Mz"]
-    for i in range(6):
-        df[M_cols[i]] = force_moment[:, i]
-
-    # force magnitude
-    df["F_mag"] = np.linalg.norm(
-        np.array([df["Fx"], df["Fy"], df["Fz"]]), axis=0)
-    # moment magnitude
-    df["M_mag"] = np.linalg.norm(
-        np.array([df["Mx"], df["My"], df["Mz"]]), axis=0)
-    return df
-
 #########################################
 # PLOTTING
 #########################################
@@ -221,6 +172,55 @@ xl_scale = (1 / 4096.0) * 9.81
 # gyro in mpu6000.c scale set to +-2000 degrees per second
 # +- 32768
 gyro_scale = (1 / 16.384) * (np.pi / 180.0)
+
+
+def calc_force_moment(df, calibration):
+    """
+    Calculates force moment
+
+    df - Pandas DataFrame from calling pd.read_csv(data_file)
+    calibration - calibration matrix [shape - (24, 6)]
+
+    S is 24 x (# num data)
+    """
+    S = []
+    sensor_columns = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"]
+    for col in sensor_columns:
+        S.extend([df[col], df[col]**2, df[col]**3])
+    S = np.swapaxes(S, 0, 1)
+    force_moment = np.dot(S, calibration)
+    return force_moment
+
+
+def calibrate_to_first_k_samples(data, k=50):
+    offset = np.mean(data[:k, :], axis=0)
+    return data - offset
+
+
+def butterworth_filter(data):
+    Wn = 20. / 1000
+    filter_order = 4
+    num, den = signal.butter(filter_order, Wn)
+    return signal.lfilter(num, den, data, axis=0)
+
+
+def add_forces_moments(df, calibration, calibrate=True, k=50):
+    # force and moment
+    force_moment = calc_force_moment(df, calibration)
+    if calibrate:
+        force_moment = calibrate_to_first_k_samples(force_moment, k=k)
+    force_moment = butterworth_filter(force_moment)
+    M_cols = ["Fx", "Fy", "Fz", "Mx", "My", "Mz"]
+    for i in range(6):
+        df[M_cols[i]] = force_moment[:, i]
+
+    # force magnitude
+    df["F_mag"] = np.linalg.norm(
+        np.array([df["Fx"], df["Fy"], df["Fz"]]), axis=0)
+    # moment magnitude
+    df["M_mag"] = np.linalg.norm(
+        np.array([df["Mx"], df["My"], df["Mz"]]), axis=0)
+    return df
 
 
 def process_data(df,
