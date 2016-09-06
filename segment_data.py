@@ -15,6 +15,30 @@ import utils
 import warnings
 import matplotlib.cbook
 warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
+"""
+Usage:
+    python segment_data.py --input {filepath or directory} \
+    --output_dir {directory}
+
+Example:
+    python segment_data.py \
+    --input experiment_data/yellow_roach/drag_experiments \
+    --output_dir terrain_identification
+
+To segment:
+
+1. Select each segment by clicking its beginning point followed by its end
+point. Each segment must be sequential and cannot overlap. There should be
+an even number of points selected, 2 for each segment. If there is an error
+while segmenting, such as an odd number of points selected, you have the
+option of redoing the segmenting, by entering [y]es on the error prompt.
+
+2. After an even number of sequential points are selected, you have the
+option of viewing the chosen segments on the graph by pressing [d], redoing
+the segmentation procedure by pressing [r], quitting via [q], and keeping
+the points via [y]. If you choose to keep the points, you will be prompted
+to assign labels to each segment in order, starting from segment 0.
+"""
 
 parser = argparse.ArgumentParser(
     description='Performs multiple label segmentation. Each data file can have'
@@ -154,25 +178,12 @@ def segmenter_gui(df,
                   columns=[["Fx", "Fy", "Fz"], "F_mag", ["Mx", "My", "Mz"],
                            "M_mag", ["AX", "AY", "AZ"], "A_mag"]):
     """
-    Renders the segmenting interface.
+    Renders the segmenting interface and records the segments obtained from
+    clicking on the plot.
 
     Returns:
         segments - a list tuples, where each tuple contains
             (segment begin (float), segment end (float), segment label (str)).
-
-    To segment:
-
-    1. Select each segment by clicking its beginning point followed by its end
-    point. Each segment must be sequential and cannot overlap. There should be
-    an even number of points selected, 2 for each segment. If there is an error
-    while segmenting, such as an odd number of points selected, you have the
-    option of redoing the segmenting, by entering [y]es on the error prompt.
-
-    2. After an even number of sequential points are selected, you have the
-    option of viewing the chosen segments on the graph by pressing [d], redoing
-    the segmentation procedure by pressing [r], quitting via [q], and keeping
-    the points via [y]. If you choose to keep the points, you will be prompted
-    to assign labels to each segment in order, starting from segment 0.
     """
     while True:
         # Render the segmenting interface and allow the users to choose points.
