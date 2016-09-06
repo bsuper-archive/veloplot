@@ -16,6 +16,9 @@ import warnings
 import matplotlib.cbook
 warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
 """
+Segments each data file into multiple segments and assign diff labels to each
+segment.
+
 Usage:
     python segment_data.py --input {filepath or directory} \
     --output_dir {directory}
