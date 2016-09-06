@@ -114,12 +114,20 @@ def plot_columns(df,
                  output_filename="plots.png",
                  display=False,
                  save_figure=True,
-                 color_intervals=None):
+                 color_intervals=None,
+                 figsize=None):
     """
     Columns - list of columns to plot with respect to time
+    figsize - 2 item tuple containing (height, width) of tuple. For the
+        notebooks, this is not necessary as figure.set_size_inches(...) will
+        determine the line chart size. However, this is necessary while using
+        the matplotlib gui interface.
     """
-
-    figure, axarr = plt.subplots(len(columns))
+    if figsize:
+        figure, axarr = plt.subplots(len(columns), figsize=figsize)
+    else:
+        # Use the default figsize specified by rcparams.
+        figure, axarr = plt.subplots(len(columns))
 
     for i in range(len(columns)):
         if type(columns[i]) == list:
@@ -229,7 +237,6 @@ def process_data(df,
                  k=50,
                  leg_pos_in_radians=True):
     # convert timestamps to seconds
-    print df.columns
     df["time"] = df["time"] / 1000000.0
 
     # Leg Position R,L
