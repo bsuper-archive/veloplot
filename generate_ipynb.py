@@ -104,7 +104,7 @@ def create_notebook(data_file, output_filename, overwrite=False):
 
 
 if __name__ == "__main__":
-    overwrite = True
+    overwrite = False 
     if len(sys.argv) > 1:
         generate_notebooks(sys.argv[1], overwrite)
     else:
