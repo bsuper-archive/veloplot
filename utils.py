@@ -372,7 +372,7 @@ def convert_streaming_output_to_telemetry_file(
 #####################################
 
 if __name__ == "__main__":
-    CALIBRATION_FILE = "calibration/out/cal_1_C_matrix.mat"
+    CALIBRATION_FILE = "calibration/out/C.mat"
     DATA_FILE = "experiment_data/telemetry_2016.07.16-17/2016.07.16_19.33.37_trial_imudata.txt"
     df = process_data_files(DATA_FILE, CALIBRATION_FILE)
     plot_columns(

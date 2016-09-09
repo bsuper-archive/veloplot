@@ -84,7 +84,7 @@ def get_seg_fname(folder, experiment_name, seg_idx, label):
 
 def segment(input_data,
             output_dir="terrain_identification",
-            calibration_file="calibration/out/cal_1_C_matrix.mat",
+            calibration_file="calibration/out/C.mat",
             telemetry_suffix="_trial_imudata.txt"):
     """
     Main method that performs the segmentation.

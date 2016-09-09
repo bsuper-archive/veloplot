@@ -18,7 +18,7 @@ import os
 DATA_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/data/"
 CTL_FILES = DATA_FOLDER + "ctl*.csv"  # No touch data
 ACT_FILES = DATA_FOLDER + "act*.csv"  # Touch data
-CALIBRATION_FILE = "calibration/out/cal_1_C_matrix.mat"
+CALIBRATION_FILE = "calibration/out/C.mat"
 
 
 def preprocess(features, labels):
