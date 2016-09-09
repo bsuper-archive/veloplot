@@ -1,6 +1,7 @@
 import nbformat as nbf
 import fnmatch
 import os
+import sys
 from runipy.notebook_runner import NotebookRunner
 
 
@@ -103,4 +104,8 @@ def create_notebook(data_file, output_filename, overwrite=False):
 
 
 if __name__ == "__main__":
-    generate_notebooks(overwrite=True)
+    overwrite = True
+    if len(sys.argv) > 1:
+        generate_notebooks(sys.argv[1], overwrite)
+    else:
+        generate_notebooks(overwrite=overwrite)
