@@ -54,7 +54,7 @@ def create_notebook(data_file, output_filename, overwrite=False):
     "import utils".format(to_root_path)
 
     files_cell = lambda to_root_path_ : \
-    "CALIBRATION_FILE = '{0}calibration/out/new_cal_2_C_matrix.mat'\n" \
+    "CALIBRATION_FILE = '{0}calibration/out/C.mat'\n" \
     "DATA_FILE = '{0}{1}'".format(to_root_path_, data_file)
 
     # Because this file is run from the top directory and iPython notebooks are
@@ -104,7 +104,7 @@ def create_notebook(data_file, output_filename, overwrite=False):
 
 
 if __name__ == "__main__":
-    overwrite = False 
+    overwrite = False
     if len(sys.argv) > 1:
         generate_notebooks(sys.argv[1], overwrite)
     else:
