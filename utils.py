@@ -130,24 +130,27 @@ def plot_columns(df,
         figure, axarr = plt.subplots(len(columns))
 
     for i in range(len(columns)):
+        # If len(columns) > 1, then axarr is an array of axes.
+        ax = axarr[i] if len(columns) > 1 else axarr
+
         if type(columns[i]) == list:
             for col in columns[i]:
-                axarr[i].plot(df["time"], df[col], label=col)
-                axarr[i].set_ylabel(ylabels[col])
-                axarr[i].set_title(titles[col])
+                ax.plot(df["time"], df[col], label=col)
+                ax.set_ylabel(ylabels[col])
+                ax.set_title(titles[col])
 
         else:
-            axarr[i].plot(df["time"], df[columns[i]], label=columns[i])
-            axarr[i].set_ylabel(ylabels[columns[i]])
-            axarr[i].set_title(titles[columns[i]])
+            ax.plot(df["time"], df[columns[i]], label=columns[i])
+            ax.set_ylabel(ylabels[columns[i]])
+            ax.set_title(titles[columns[i]])
 
         if color_intervals:
             for el in color_intervals:
-                axarr[i].axvspan(el[0], el[1], facecolor='y', alpha=0.5)
+                ax.axvspan(el[0], el[1], facecolor='y', alpha=0.5)
 
-        axarr[i].set_xlim([0, df["time"].max()])
-        axarr[i].set_xlabel("Time (s)")
-        axarr[i].legend(loc='upper right')
+        ax.set_xlim([0, df["time"].max()])
+        ax.set_xlabel("Time (s)")
+        ax.legend(loc='upper right')
 
     figure.set_size_inches(12, int(2 * len(columns)))
     plt.tight_layout()
