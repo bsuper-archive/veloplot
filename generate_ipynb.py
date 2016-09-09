@@ -93,7 +93,7 @@ def create_notebook(data_file, output_filename, overwrite=False):
     r2.run_notebook()
     # See comment above header_cell.
     r2.nb['worksheets'][0]['cells'][1] = nbf.v3.new_code_cell(
-        header_cell(to_root_path))
+        files_cell(to_root_path))
     nbf.write(r2.nb, output_filename, version=3)
     notebook = nbf.read(output_filename, 3)
     nbf.write(notebook, output_filename, version=4)
