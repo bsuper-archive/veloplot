@@ -103,4 +103,4 @@ def create_notebook(data_file, output_filename, overwrite=False):
 
 
 if __name__ == "__main__":
-    generate_notebooks(overwrite=False)
+    generate_notebooks(overwrite=True)
