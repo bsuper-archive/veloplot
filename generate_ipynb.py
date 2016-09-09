@@ -52,14 +52,15 @@ def create_notebook(data_file, output_filename, overwrite=False):
     "sys.path.append('{0}')\n" \
     "import utils".format(to_root_path)
 
+    files_cell = lambda to_root_path_ : \
+    "CALIBRATION_FILE = '{0}calibration/out/new_cal_2_C_matrix.mat'\n" \
+    "DATA_FILE = '{0}{1}'".format(to_root_path_, data_file)
+
     # Because this file is run from the top directory and iPython notebooks are
     # run from the subdirectories, we must first leave the path to the root
     # empty to run the cell, then change the cell after we ran it so that we
     # can run the iPython notebooks via jupyter.
-    header_cell = lambda to_root_path_ : \
-    "CALIBRATION_FILE = '{0}calibration/out/new_cal_2_C_matrix.mat'\n" \
-    "DATA_FILE = '{0}{1}'\n" \
-    "utils.print_header(DATA_FILE)".format(to_root_path_, data_file)
+    header_cell = "utils.print_header(DATA_FILE)"
 
     robot_info_cell = \
     "df = utils.process_data_files(DATA_FILE, CALIBRATION_FILE)\n" \
@@ -68,10 +69,15 @@ def create_notebook(data_file, output_filename, overwrite=False):
     force_torque_cell = \
     "utils.plot_columns(df, [['Fx', 'Fy', 'Fz'], 'F_mag', ['Mx', 'My', 'Mz'], 'M_mag', ['AX', 'AY', 'AZ'], 'A_mag', ['GyroX', 'GyroY', 'GyroZ'], 'Gyro_mag'], display=True, save_figure=False)"
 
+    sensors_cell = \
+    "df.plot(x='time', ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'])"
+
     nb['cells'] = [nbf.v4.new_code_cell(import_cell),
-                   nbf.v4.new_code_cell(header_cell('')),
+                   nbf.v4.new_code_cell(files_cell('')),
+                   nbf.v4.new_code_cell(header_cell),
                    nbf.v4.new_code_cell(robot_info_cell),
-                   nbf.v4.new_code_cell(force_torque_cell)]
+                   nbf.v4.new_code_cell(force_torque_cell),
+                   nbf.v4.new_code_cell(sensors_cell)]
 
     with open(output_filename, 'w') as f:
         nbf.write(nb, f)
