@@ -70,7 +70,7 @@ def create_notebook(data_file, output_filename, overwrite=False):
     "utils.plot_columns(df, [['Fx', 'Fy', 'Fz'], 'F_mag', ['Mx', 'My', 'Mz'], 'M_mag', ['AX', 'AY', 'AZ'], 'A_mag', ['GyroX', 'GyroY', 'GyroZ'], 'Gyro_mag'], display=True, save_figure=False)"
 
     sensors_cell = \
-    "df.plot(x='time', ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'])"
+    "df.plot(x='time', y=['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'])"
 
     nb['cells'] = [nbf.v4.new_code_cell(import_cell),
                    nbf.v4.new_code_cell(files_cell('')),
