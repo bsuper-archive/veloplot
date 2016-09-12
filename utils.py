@@ -176,8 +176,8 @@ vdivide = 3.7 / 2.7  # for battery scaling
 vgain = 15.0 / 47.0  # gain of differential amplifier
 RMotor = 3.3  # resistance for SS7-3.3 ** need to check **
 Kt = 1.41  # motor torque constant mN-m/A  ** SS7-3.3 **
-mR_with_bottom_shell = 77.9/1000 #robots mass with bottom shell (kg)
-mR_without_bottom_shell = 73.3/1000 #robots mass without bottom shell (kg)
+mR_with_bottom_shell = 77.9 / 1000  #robots mass with bottom shell (kg)
+mR_without_bottom_shell = 73.3 / 1000  #robots mass without bottom shell (kg)
 # acelerometer scale in mpu6000.c set to +- 8g
 # +- 32768 data
 xl_scale = (1 / 4096.0) * 9.81
@@ -369,6 +369,7 @@ def convert_streaming_output_to_telemetry_file(
                 output_line = ",".join([time] + ['0'] * 15 + s) + "\n"
                 telemetry_file.write(output_line)
 
+
 #####################################
 # Calculate Cost of Transport
 #####################################
@@ -381,8 +382,8 @@ def cost_of_transport(df, has_bottom_shell, v_avg):
     else:
         mass = mR_without_bottom_shell
 
-    COT_r = P_r / (mass*v_avg)
-    COT_l = P_l / (mass*v_avg)
+    COT_r = P_r / (mass * v_avg)
+    COT_l = P_l / (mass * v_avg)
     return (COT_r, COT_l)
 
 #####################################
