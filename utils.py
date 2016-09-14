@@ -389,7 +389,7 @@ def cost_of_transport_specific_resistance(df, has_bottom_shell=False, v_avg):
     # I_R = (df["VBatt"] - df["RBEMF"])/RMotor
     # I_L = (df["VBatt"] - df["LBEMF"])/RMotor
 
-    g = constants.value('standard acceleration of gravity')
+    g = 9.80665
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
@@ -398,7 +398,7 @@ def cost_of_transport_specific_resistance(df, has_bottom_shell=False, v_avg):
     COT = (df["PowerR"] + df["PowerL"]) / (mass*v_avg)
 
     specific_R = (df["PowerR"] + df["PowerL"]) / (mass*g*v_avg)
-    return (COT,specific_R) 
+    return (COT,specific_R)
 
 
 #####################################
