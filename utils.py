@@ -187,6 +187,8 @@ gyro_scale = (1 / 16.384) * (np.pi / 180.0)
 
 mR_with_bottom_shell = 77.9 / 1000  #robots mass with bottom shell (kg)
 mR_without_bottom_shell = 73.3 / 1000  #robots mass without bottom shell (kg)
+g = 9.80665  #acceleratio of gravity
+
 
 def calc_force_moment(df, calibration):
     """
@@ -376,28 +378,40 @@ def convert_streaming_output_to_telemetry_file(
 # Calculate Cost of Transport and
 # Specific Resistance
 #####################################
-def cost_of_transport(df, has_bottom_shell, v_avg):
-    #DCR is duty cycle
-    #Power_In_L = I*Vref*DutyCycle
-    #Power_In_R = I*Vref*DutyCycle
-    #Vref is the BAT column in telemetry
-    #I_L = (Vref-LBEMF)/R
-    #I_R = (Vref-RBEMF)/R
-    #
-    #COT = Power_In/(mass*v_avg)
-
-    # I_R = (df["VBatt"] - df["RBEMF"])/RMotor
-    # I_L = (df["VBatt"] - df["LBEMF"])/RMotor
-
-    g = 9.80665
+def cost_of_transport_inside_flaps(df, has_bottom_shell, v_avg, start_time,
+                                   end_time):
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
         mass = mR_without_bottom_shell
 
-    COT = (df["PowerR"] + df["PowerL"]) / (mass*v_avg*g)
+    inside_flaps_PowerR = df["PowerR"][start_time:end_time + 1]
+    inside_flaps_PowerR_avg = np.average(inside_flaps_PowerR)
+
+    inside_flaps_PowerL = df["PowerL"][start_time:end_time + 1]
+    inside_flaps_PowerL_avg = np.average(inside_flaps_PowerL)
+
+    COT = (inside_flaps_PowerR_avg + inside_flaps_PowerL_avg) / (mass * g *
+                                                                 v_avg)
     return COT
 
+
+def cost_of_transport_outside_flaps(df, has_bottom_shell, v_avg, start_time,
+                                    end_time):
+    # if has_bottom_shell:
+    #     mass = mR_with_bottom_shell
+    # else:
+    #     mass = mR_without_bottom_shell
+    #
+    # outside_flaps_PowerR = np.concat(df["PowerR"][:start_time]+df["PowerR"][end_time+1:])
+    # outside_flaps_PowerR_avg = np.average(outside_flaps_PowerR)
+    #
+    # outside_flaps_PowerL = np.concat(df["PowerL"][:start_time]+df["PowerL"][end_time+1:])
+    # outside_flaps_PowerL_avg = np.average(outside_flaps_PowerL)
+    #
+    # COT = (outside_flaps_PowerR_avg + outside_flaps_PowerL_avg) / (mass * g * v_avg)
+    # return COT
+    pass
 
 #####################################
 # TESTING Code
