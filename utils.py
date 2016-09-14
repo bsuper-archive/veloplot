@@ -176,8 +176,6 @@ vdivide = 3.7 / 2.7  # for battery scaling
 vgain = 15.0 / 47.0  # gain of differential amplifier
 RMotor = 3.3  # resistance for SS7-3.3 ** need to check **
 Kt = 1.41  # motor torque constant mN-m/A  ** SS7-3.3 **
-mR_with_bottom_shell = 77.9 / 1000  #robots mass with bottom shell (kg)
-mR_without_bottom_shell = 73.3 / 1000  #robots mass without bottom shell (kg)
 # acelerometer scale in mpu6000.c set to +- 8g
 # +- 32768 data
 xl_scale = (1 / 4096.0) * 9.81
@@ -186,6 +184,8 @@ xl_scale = (1 / 4096.0) * 9.81
 # +- 32768
 gyro_scale = (1 / 16.384) * (np.pi / 180.0)
 
+mR_with_bottom_shell = 77.9 / 1000  #robots mass with bottom shell (kg)
+mR_without_bottom_shell = 73.3 / 1000  #robots mass without bottom shell (kg)
 
 def calc_force_moment(df, calibration):
     """
@@ -284,6 +284,7 @@ def process_data(df,
     # Power calculation
     # i_m = (VBatt - BEMF)/R
     # V_m is just VBatt
+    # DCR is duty cycle
     df["PowerR"] = np.abs(
         (df["DCR"] / 4096.0) * df["VBatt"] * (df["VBatt"] - df["RBEMF"]) /
         RMotor)  # P = V_m i_m x duty cycle
@@ -374,17 +375,26 @@ def convert_streaming_output_to_telemetry_file(
 # Calculate Cost of Transport
 #####################################
 def cost_of_transport(df, has_bottom_shell, v_avg):
-    P_r = df["PowerR"]
-    P_l = df["PowerL"]
+    #DCR is duty cycle
+    #Power_In_L = I*Vref*DutyCycle
+    #Power_In_R = I*Vref*DutyCycle
+    #Vref is the BAT column in telemetry
+    #I_L = (Vref-LBEMF)/R
+    #I_R = (Vref-RBEMF)/R
+    #
+    #COT = Power_In/(mass*v_avg)
+
+    # I_R = (df["VBatt"] - df["RBEMF"])/RMotor
+    # I_L = (df["VBatt"] - df["LBEMF"])/RMotor
 
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
         mass = mR_without_bottom_shell
 
-    COT_r = P_r / (mass * v_avg)
-    COT_l = P_l / (mass * v_avg)
-    return (COT_r, COT_l)
+    COT = (df["PowerR"] + df["PowerL"]) / (mass*v_avg)
+    return COT
+
 
 #####################################
 # TESTING Code
