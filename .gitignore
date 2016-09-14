@@ -5,3 +5,4 @@ venv
 tmp
 deploy_key
 out/*
+calibration/measurement_files/*
