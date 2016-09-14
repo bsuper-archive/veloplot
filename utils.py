@@ -164,7 +164,7 @@ def plot_columns(df,
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         print "Saving image as", output_dir + output_filename
-        figure.savefig(output_dir + output_filename, dpi=350)
+        figure.savefig(output_dir + output_filename, dpi=450)
         print "Image saved."
 
 #########################################
