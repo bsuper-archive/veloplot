@@ -413,6 +413,28 @@ def cost_of_transport_outside_flaps(df, has_bottom_shell, v_avg, start_time,
     # return COT
     pass
 
+def calculate_drag_forces(df, has_bottom_shell, v_avg, start_time, end_time):
+    # if has_bottom_shell:
+    #     mass = mR_with_bottom_shell
+    # else:
+    #     mass = mR_without_bottom_shell
+    #
+    #
+    # Fnet_z = df["Fz"][start_time:end_time+1] + mass * g
+    # Fnet_z_avg = np.average(Fnet_z)
+    # drag_forces_ground_avg = Fnet_z_avg * coeff_friction
+    #
+    # Fnet_x = df["Fx"][start_time:end_time+1]
+    # Fnet_x_avg = np.average(Fnet_x)
+    # drag_forces_forward_avg = Fnet_x_avg
+    #
+    # total_drag = drag_forces_ground_avg + drag_forces_forward_avg
+    # return total_drag
+
+    pass
+
+
+
 #####################################
 # TESTING Code
 #####################################
