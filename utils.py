@@ -397,7 +397,8 @@ def cost_of_transport_inside_flaps(df, has_bottom_shell, v_avg, start_time,
     if same_power_across_experiments != 0:
         COT = (same_power_across_experiments) / (mass * g * v_avg)
     else:
-        COT = (inside_flaps_PowerR_avg + inside_flaps_PowerL_avg) / (mass * g * v_avg)
+        COT = (inside_flaps_PowerR_avg + inside_flaps_PowerL_avg) / (mass * g *
+                                                                     v_avg)
 
     return COT
 
@@ -419,17 +420,18 @@ def cost_of_transport_outside_flaps(df, has_bottom_shell, v_avg, start_time,
     # return COT
     pass
 
-def calculate_drag_energy(df, has_bottom_shell, start_time,end_time,distance):
+
+def calculate_drag_energy(df, has_bottom_shell, start_time, end_time,
+                          distance):
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
         mass = mR_without_bottom_shell
 
-    Fnet_x = df["Fx"][start_time:end_time+1]
+    Fnet_x = df["Fx"][start_time:end_time + 1]
     Fnet_x_avg = np.average(Fnet_x)
 
     return math.fabs(Fnet_x_avg * distance)
-
 
 #####################################
 # TESTING Code
