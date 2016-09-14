@@ -398,7 +398,7 @@ def cost_of_transport_specific_resistance(df, has_bottom_shell=False, v_avg):
     COT = (df["PowerR"] + df["PowerL"]) / (mass*v_avg)
 
     specific_R = (df["PowerR"] + df["PowerL"]) / (mass*g*v_avg)
-    return (COT,specific_R)
+    return (COT,specific_R) 
 
 
 #####################################
