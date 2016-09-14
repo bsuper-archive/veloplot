@@ -5,6 +5,7 @@ import pandas as pd
 from scipy.io import loadmat
 from scipy import signal
 from scipy.integrate import quad
+from scipy import constants
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -372,9 +373,10 @@ def convert_streaming_output_to_telemetry_file(
 
 
 #####################################
-# Calculate Cost of Transport
+# Calculate Cost of Transport and
+# Specific Resistance
 #####################################
-def cost_of_transport(df, has_bottom_shell, v_avg):
+def cost_of_transport_specific_resistance(df, has_bottom_shell, v_avg):
     #DCR is duty cycle
     #Power_In_L = I*Vref*DutyCycle
     #Power_In_R = I*Vref*DutyCycle
@@ -387,13 +389,16 @@ def cost_of_transport(df, has_bottom_shell, v_avg):
     # I_R = (df["VBatt"] - df["RBEMF"])/RMotor
     # I_L = (df["VBatt"] - df["LBEMF"])/RMotor
 
+    g = constants('standard acceleration of gravity')
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
         mass = mR_without_bottom_shell
 
     COT = (df["PowerR"] + df["PowerL"]) / (mass*v_avg)
-    return COT
+
+    specific_R = (df["PowerR"] + df["PowerL"]) / (mass*g*v_avg)
+    return (COT,specific_R)
 
 
 #####################################
