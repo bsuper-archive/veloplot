@@ -376,7 +376,7 @@ def convert_streaming_output_to_telemetry_file(
 # Calculate Cost of Transport and
 # Specific Resistance
 #####################################
-def cost_of_transport_specific_resistance(df, has_bottom_shell, v_avg):
+def cost_of_transport_specific_resistance(df, has_bottom_shell=False, v_avg):
     #DCR is duty cycle
     #Power_In_L = I*Vref*DutyCycle
     #Power_In_R = I*Vref*DutyCycle
@@ -389,7 +389,7 @@ def cost_of_transport_specific_resistance(df, has_bottom_shell, v_avg):
     # I_R = (df["VBatt"] - df["RBEMF"])/RMotor
     # I_L = (df["VBatt"] - df["LBEMF"])/RMotor
 
-    g = constants('standard acceleration of gravity')
+    g = constants.value('standard acceleration of gravity')
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
