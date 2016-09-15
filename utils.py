@@ -8,6 +8,7 @@ from scipy.integrate import quad
 from scipy import constants
 import matplotlib.pyplot as plt
 import seaborn as sns
+import math
 
 sns.set_style("whitegrid")
 sns.set_palette("bright")
@@ -379,7 +380,7 @@ def convert_streaming_output_to_telemetry_file(
 # Specific Resistance
 #####################################
 def cost_of_transport_inside_flaps(df, has_bottom_shell, v_avg, start_time,
-                                   end_time):
+                                   end_time, same_power_across_experiments):
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
@@ -391,8 +392,14 @@ def cost_of_transport_inside_flaps(df, has_bottom_shell, v_avg, start_time,
     inside_flaps_PowerL = df["PowerL"][start_time:end_time + 1]
     inside_flaps_PowerL_avg = np.average(inside_flaps_PowerL)
 
-    COT = (inside_flaps_PowerR_avg + inside_flaps_PowerL_avg) / (mass * g *
-                                                                 v_avg)
+    print "power:{0}".format(inside_flaps_PowerR_avg + inside_flaps_PowerL_avg)
+
+    if same_power_across_experiments != 0:
+        COT = (same_power_across_experiments) / (mass * g * v_avg)
+    else:
+        COT = (inside_flaps_PowerR_avg + inside_flaps_PowerL_avg) / (mass * g *
+                                                                     v_avg)
+
     return COT
 
 
@@ -412,6 +419,19 @@ def cost_of_transport_outside_flaps(df, has_bottom_shell, v_avg, start_time,
     # COT = (outside_flaps_PowerR_avg + outside_flaps_PowerL_avg) / (mass * g * v_avg)
     # return COT
     pass
+
+
+def calculate_drag_energy(df, has_bottom_shell, start_time, end_time,
+                          distance):
+    if has_bottom_shell:
+        mass = mR_with_bottom_shell
+    else:
+        mass = mR_without_bottom_shell
+
+    Fnet_x = df["Fx"][start_time:end_time + 1]
+    Fnet_x_avg = np.average(Fnet_x)
+
+    return math.fabs(Fnet_x_avg * distance)
 
 #####################################
 # TESTING Code
