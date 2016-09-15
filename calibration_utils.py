@@ -146,7 +146,7 @@ def plot_force_error(shell,
                      columns=["Fx", "Fy", "Fz"],
                      display=True,
                      save_figure=False,
-                     output_dir="/data/",
+                     output_dir="out/",
                      output_filename="force_error_plots.png"):
     """
     Plot training/validation/test errors on a graph.
@@ -157,9 +157,10 @@ def plot_force_error(shell,
 
     fig, axarr = plt.subplots(len(columns))
     for i in xrange(len(columns)):
-        axarr[i].plot(shell[columns[i]], label='Shell Sensor')
+        axarr[i].plot(shell[columns[i]], label='Estimated')
         axarr[i].set_ylabel("Force (N)")
-        axarr[i].plot(ati[columns[i]], label='ATI Nano')
+        axarr[i].set_xlabel("Time (ms)")
+        axarr[i].plot(ati[columns[i]], label='Ground Truth')
         axarr[i].set_title(columns[i])
         axarr[i].legend(loc='upper right')
 
@@ -168,13 +169,26 @@ def plot_force_error(shell,
 
     if display:
         plt.show()
-
     if save_figure:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         print "Saving image as", output_dir + output_filename
-        figure.savefig(output_dir + output_filename, dpi=350)
+        fig.savefig(output_dir + output_filename, dpi=450)
         print "Image saved."
+
+
+def plot_measured_vs_reconstructed(shell,
+                                   ati,
+                                   columns=['Fx', 'Fy', 'Fz'],
+                                   display=True,
+                                   save_figure=False,
+                                   output_dir="out/",
+                                   output_filename="plot.png"):
+    """ Plot Estimated and Ground Truth on the same plots for each
+        column.
+    """
+
+    pass
 
 
 def calculate_mse_error(shell_df, nano_df, columns=["Fx", "Fy", "Fz"]):
