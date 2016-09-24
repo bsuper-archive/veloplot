@@ -140,12 +140,12 @@ def plot_columns(df,
             for col in columns[i]:
                 ax.plot(df["time"], df[col], label=col)
                 ax.set_ylabel(ylabels[col])
-                ax.set_title(titles[col])
+                # ax.set_title(titles[col])
 
         else:
             ax.plot(df["time"], df[columns[i]], label=columns[i])
             ax.set_ylabel(ylabels[columns[i]])
-            ax.set_title(titles[columns[i]])
+            # ax.set_title(titles[columns[i]])
 
         if color_intervals:
             for el in color_intervals:
