@@ -380,7 +380,10 @@ def convert_streaming_output_to_telemetry_file(
 # Specific Resistance
 #####################################
 def cost_of_transport_inside_flaps(df, has_bottom_shell, v_avg, start_time,
-                                   end_time, same_power_across_experiments):
+                                   end_time, same_power_across_experiments,isCm=False):
+
+    if isCm:
+        v_avg = v_avg/100.
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
