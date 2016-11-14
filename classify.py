@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cross_validation import train_test_split, cross_val_score, KFold
 from sklearn.utils import shuffle
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier
+from sklearn.metrics import roc_curve, roc_auc_score
 from sklearn.svm import SVC
 import random
 import featurizer
@@ -32,6 +33,7 @@ def preprocess(features, labels):
 def get_preprocessed_train_data(ctl_files=CTL_FILES, act_files=ACT_FILES):
     features, labels = featurizer.get_feature_vector(ctl_files, act_files)
     features, labels, scaler = preprocess(features, labels)
+    # print labels
     return features, labels, scaler
 
 
@@ -48,8 +50,10 @@ def clf_predict(clf, test_data, ctl_files=CTL_FILES, act_files=ACT_FILES):
     X, Y, scaler = get_preprocessed_train_data(
         ctl_files=ctl_files, act_files=act_files)
     clf.fit(X, Y)
+
     test_data = scaler.transform(test_data)
-    return clf.predict(test_data)
+    predictions = clf.predict(test_data)
+    return predictions, clf, scaler
 
 
 def clf_predict_and_visualize(
@@ -66,7 +70,7 @@ def clf_predict_and_visualize(
         output_filename="preds_vis.png",
         ctl_files=CTL_FILES,
         act_files=ACT_FILES):
-    preds = clf_predict(
+    preds, clf, scaler = clf_predict(
         clf, test_data, ctl_files=ctl_files, act_files=act_files)
     color_intervals = []
     for i in xrange(len(df_segs)):
@@ -81,7 +85,15 @@ def clf_predict_and_visualize(
         output_dir=output_dir,
         output_filename=output_filename,
         color_intervals=color_intervals)
-    return preds
+    return preds, clf, scaler
+
+def get_roc_curve_params(true_labels, class_scores):
+    false_positive_rate, true_positive_rate, thresholds = roc_curve(true_labels, class_scores)
+    return false_positive_rate, true_positive_rate, thresholds
+
+def get_roc_score(true_labels, class_scores):
+    return roc_auc_score(true_labels, class_scores)
+
 
 #########################################
 # RANDOM FORESTS
