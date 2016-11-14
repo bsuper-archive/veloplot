@@ -30,6 +30,7 @@ def preprocess(features, labels):
     return features, labels, scaler
 
 
+
 def get_preprocessed_train_data(ctl_files=CTL_FILES, act_files=ACT_FILES):
     features, labels = featurizer.get_feature_vector(ctl_files, act_files)
     features, labels, scaler = preprocess(features, labels)
@@ -85,15 +86,7 @@ def clf_predict_and_visualize(
         output_dir=output_dir,
         output_filename=output_filename,
         color_intervals=color_intervals)
-    return preds, clf, scaler
-
-def get_roc_curve_params(true_labels, class_scores):
-    false_positive_rate, true_positive_rate, thresholds = roc_curve(true_labels, class_scores)
-    return false_positive_rate, true_positive_rate, thresholds
-
-def get_roc_score(true_labels, class_scores):
-    return roc_auc_score(true_labels, class_scores)
-
+    return preds, clf
 
 #########################################
 # RANDOM FORESTS
@@ -107,8 +100,8 @@ def random_forests():
 
 def random_forests_cross_val(X, Y, k=10):
     clf = random_forests()
-    cv_scores = cross_val_score(clf, X, Y, cv=k)
-    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean()
+    cv_scores = cross_val_score(clf, X, Y, cv=k,scoring='roc_auc')
+    print "{0}-fold CV ROC Mean: ".format(k), cv_scores.mean()
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     clf.fit(X, Y)
     print "OOB score:", clf.oob_score_
@@ -138,8 +131,8 @@ def xgb_trees():
 
 def xgb_trees_cross_val(X, Y, k=10):
     clf = xgb_trees()
-    cv_scores = cross_val_score(clf, X, Y, cv=k)
-    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean()
+    cv_scores = cross_val_score(clf, X, Y, cv=k, scoring='roc_auc')
+    print "{0}-fold CV ROC Mean: ".format(k), cv_scores.mean()
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     clf = clf.fit(X, Y)
     sorted_feature_importances = sorted(zip(featurizer.get_feature_names(), clf.feature_importances_), \
@@ -167,8 +160,8 @@ def svc():
 
 def svc_cross_val(X, Y, k=10):
     clf = svc()
-    cv_scores = cross_val_score(clf, X, Y, cv=k)
-    print "{0}-fold CV Acc Mean: ".format(k), cv_scores.mean()
+    cv_scores = cross_val_score(clf, X, Y, cv=k, scoring='roc_auc')
+    print "{0}-fold CV ROC Mean: ".format(k), cv_scores.mean()
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     clf = clf.fit(X, Y)
     return clf
@@ -213,9 +206,9 @@ def dnn_cross_val(X, Y, k=10):
         X_train, X_test = X[train_indices], X[test_indices]
         Y_train, Y_test = Y[train_indices], Y[test_indices]
         clf.fit(X_train, Y_train)
-        score = metrics.accuracy_score(Y_test, clf.predict(X_test))
+        score = metrics.roc_auc_score(Y_test, clf.predict(X_test))
         cv_scores.append(score)
-    print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores)
+    print "{0}-fold CV ROC Mean: ".format(k), np.mean(cv_scores)
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     return clf
 
@@ -255,7 +248,7 @@ def ensemble_cross_val(X, Y, k=10):
         clf.fit(X_train, Y_train)
         score = metrics.accuracy_score(Y_test, clf.predict(X_test))
         cv_scores.append(score)
-    print "{0}-fold CV Acc Mean: ".format(k), np.mean(cv_scores)
+    print "{0}-fold CV ROC Mean: ".format(k), np.mean(cv_scores)
     print "CV Scores: ", ", ".join(map(str, cv_scores))
     return clf
 
