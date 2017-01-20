@@ -424,8 +424,7 @@ def cost_of_transport_outside_flaps(df, has_bottom_shell, v_avg, start_time,
     pass
 
 
-def calculate_drag_energy(df, has_bottom_shell, start_time, end_time,
-                          distance):
+def calculate_drag_energy(df, has_bottom_shell, start_time, end_time,distance=0.254):
     if has_bottom_shell:
         mass = mR_with_bottom_shell
     else:
@@ -433,9 +432,17 @@ def calculate_drag_energy(df, has_bottom_shell, start_time, end_time,
 
     Fnet_x = df["Fx"][start_time:end_time + 1]
     Fnet_x_avg = np.average(Fnet_x)
-
+    print "drag energy (kg*cm^2/s^2): {0}".format(math.fabs(Fnet_x_avg * distance)*100**2)
     return math.fabs(Fnet_x_avg * distance)
 
+def get_cost_of_transport_from_list(df, has_bottom_shell,v_avg, intervals, isCm=False):
+    cots = []
+    for interval in intervals:
+        start_time = interval[0]
+        end_time = interval[1]
+        val = cost_of_transport_inside_flaps(df,has_bottom_shell,v_avg, start_time,end_time,0,isCm)
+        cots.append(val)
+    return cots
 #####################################
 # TESTING Code
 #####################################
