@@ -443,6 +443,44 @@ def get_cost_of_transport_from_list(df, has_bottom_shell,v_avg, intervals, isCm=
         val = cost_of_transport_inside_flaps(df,has_bottom_shell,v_avg, start_time,end_time,0,isCm)
         cots.append(val)
     return cots
+
+
+def get_leg_cycles(df, col="Right Leg Pos", start_time_ms=0, end_time_ms=-1, min_cycle_len=900, max_cycle_len=1200):
+    """
+    start_time_ms - Time in ms to look for cycles
+    end_time_ms - Time in ms to look for cycles. If end_time_ms == -1, then look until the end of the telemetry data.
+    min_cycle_len - lower bound on the number of samples in one cycle
+    max_cycle_len - typical number of samples of 1 cycle < max_len_of_cycle < 2 * typical num of samples of 1 cycle
+
+    Returns:
+    list of tuples
+    """
+    # Convert ms variables to sec.
+    start_time_sec = start_time_ms / 1000.
+    if end_time_ms == -1:
+        end_time_sec = df.iloc[-1]["time"]
+    else:
+        end_time_sec = end_time_ms / 1000.
+
+    # Advance curr_idx to start_time.
+    curr_idx = 0
+    while df.iloc[curr_idx]["time"] < start_time_sec:
+        curr_idx += 1
+
+    strides = []
+    while curr_idx < df["time"].shape[0] and df.iloc[curr_idx]["time"] < end_time_sec:
+
+        leg_begin_idx = df.iloc[curr_idx:curr_idx + max_cycle_len][col].argmin()
+        leg_end_idx = df.iloc[leg_begin_idx:leg_begin_idx + max_cycle_len][col].argmax()
+
+        if leg_end_idx - leg_begin_idx > min_cycle_len:
+            print leg_begin_idx, leg_end_idx
+            strides.append((leg_begin_idx, leg_end_idx))
+
+        curr_idx = leg_end_idx + 1
+
+    return strides
+
 #####################################
 # TESTING Code
 #####################################
