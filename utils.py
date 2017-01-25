@@ -126,6 +126,8 @@ def plot_columns(df,
         determine the line chart size. However, this is necessary while using
         the matplotlib gui interface.
     """
+    xfont = {'fontname':'Times New Roman'}
+
     if figsize:
         figure, axarr = plt.subplots(len(columns), figsize=figsize)
     else:
@@ -139,12 +141,12 @@ def plot_columns(df,
         if type(columns[i]) == list:
             for col in columns[i]:
                 ax.plot(df["time"], df[col], label=col)
-                ax.set_ylabel(ylabels[col])
+                ax.set_ylabel(ylabels[col],fontdict=xfont, fontsize=16)
                 # ax.set_title(titles[col])
 
         else:
             ax.plot(df["time"], df[columns[i]], label=columns[i])
-            ax.set_ylabel(ylabels[columns[i]])
+            ax.set_ylabel(ylabels[columns[i]],fontdict=xfont, fontsize=16)
             # ax.set_title(titles[columns[i]])
 
         if color_intervals:
@@ -152,7 +154,7 @@ def plot_columns(df,
                 ax.axvspan(el[0], el[1], facecolor='y', alpha=0.5)
 
         ax.set_xlim([0, df["time"].max()])
-        ax.set_xlabel("Time (s)")
+        ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=16)
         ax.legend(loc='upper right')
 
     figure.set_size_inches(12, int(2 * len(columns)))
