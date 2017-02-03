@@ -142,12 +142,12 @@ def plot_columns(df,
         if type(columns[i]) == list:
             for col in columns[i]:
                 ax.plot(df["time"], df[col], label=col)
-                ax.set_ylabel(ylabels[col],fontdict=xfont, fontsize=20)
+                ax.set_ylabel(ylabels[col],fontdict=xfont, fontsize=24)
                 # ax.set_title(titles[col])
 
         else:
             ax.plot(df["time"], df[columns[i]], label=columns[i])
-            ax.set_ylabel(ylabels[columns[i]],fontdict=xfont, fontsize=20)
+            ax.set_ylabel(ylabels[columns[i]],fontdict=xfont, fontsize=24)
             # ax.set_title(titles[columns[i]])
 
         if color_intervals:
@@ -156,8 +156,8 @@ def plot_columns(df,
         print ""
 
         ax.set_xlim([0, df["time"].max()])
-        ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=20)
-        ax.legend(bbox_to_anchor=(1.13, 1.05))
+        ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=24)
+        ax.legend(bbox_to_anchor=(1.28, 1.05),fontsize=20)
         ax.tick_params(axis='both', which='major', labelsize=20)
         # ax.locator_params(nbins=10, axis='y')
 
