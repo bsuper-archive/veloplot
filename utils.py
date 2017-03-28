@@ -153,7 +153,6 @@ def plot_columns(df,
         if color_intervals:
             for el in color_intervals:
                 ax.axvspan(el[0], el[1], facecolor='y', alpha=0.5)
-        print ""
 
         ax.set_xlim([0, df["time"].max()])
         ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=24)
