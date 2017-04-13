@@ -10,7 +10,8 @@ from sklearn.svm import SVC
 import random
 import featurizer
 import operator
-import skflow
+# import skflow
+import tensorflow.contrib.learn as skflow
 import tensorflow as tf
 import sys
 import utils

@@ -110,8 +110,64 @@ ylabels = {
     "AngleZ": "Anglez"
 }
 
-
 def plot_columns(df,
+                 columns,
+                 output_dir="out/",
+                 output_filename="plots.png",
+                 display=False,
+                 save_figure=True,
+                 color_intervals=None,
+                 figsize=None):
+    """
+    Columns - list of columns to plot with respect to time
+    figsize - 2 item tuple containing (height, width) of tuple. For the
+        notebooks, this is not necessary as figure.set_size_inches(...) will
+        determine the line chart size. However, this is necessary while using
+        the matplotlib gui interface.
+    """
+    if figsize:
+        figure, axarr = plt.subplots(len(columns), figsize=figsize)
+    else:
+        # Use the default figsize specified by rcparams.
+        figure, axarr = plt.subplots(len(columns))
+
+    for i in range(len(columns)):
+        # If len(columns) > 1, then axarr is an array of axes.
+        ax = axarr[i] if len(columns) > 1 else axarr
+
+        if type(columns[i]) == list:
+            for col in columns[i]:
+                ax.plot(df["time"], df[col], label=col)
+                ax.set_ylabel(ylabels[col])
+                # ax.set_title(titles[col])
+
+        else:
+            ax.plot(df["time"], df[columns[i]], label=columns[i])
+            ax.set_ylabel(ylabels[columns[i]])
+            # ax.set_title(titles[columns[i]])
+
+        if color_intervals:
+            for el in color_intervals:
+                ax.axvspan(el[0], el[1], facecolor='y', alpha=0.5)
+
+        ax.set_xlim([0, df["time"].max()])
+        ax.set_xlabel("Time (s)")
+        ax.legend(loc='upper right')
+
+    figure.set_size_inches(12, int(2 * len(columns)))
+    plt.tight_layout()
+
+    if display:
+        plt.show()
+
+    if save_figure:
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        print "Saving image as", output_dir + output_filename
+        figure.savefig(output_dir + output_filename, dpi=450)
+        print "Image saved."
+
+def plot_columns2(df,
                  columns,
                  output_dir="out/",
                  output_filename="plots.png",
@@ -153,7 +209,6 @@ def plot_columns(df,
         if color_intervals:
             for el in color_intervals:
                 ax.axvspan(el[0], el[1], facecolor='y', alpha=0.5)
-        print ""
 
         ax.set_xlim([0, df["time"].max()])
         ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=24)
