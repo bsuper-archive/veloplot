@@ -203,7 +203,8 @@ def plot_columns2(df,
 
         else:
             ax.plot(df["time"], df[columns[i]], label=columns[i])
-            ax.set_ylabel(ylabels.get(columns[i], default=columns[i]),fontdict=xfont, fontsize=24)
+            # ax.set_ylabel(ylabels.get(columns[i], default=columns[i]),fontdict=xfont, fontsize=24)
+            ax.set_ylabel(ylabels.get(columns[i], columns[i]))
             # ax.set_title(titles[columns[i]])
 
         if color_intervals:
