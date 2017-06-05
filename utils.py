@@ -138,12 +138,12 @@ def plot_columns(df,
         if type(columns[i]) == list:
             for col in columns[i]:
                 ax.plot(df["time"], df[col], label=col)
-                ax.set_ylabel(ylabels[col])
+                ax.set_ylabel(ylabels.get(col, col))
                 # ax.set_title(titles[col])
 
         else:
             ax.plot(df["time"], df[columns[i]], label=columns[i])
-            ax.set_ylabel(ylabels[columns[i]])
+            ax.set_ylabel(ylabels.get(columns[i], columns[i]))
             # ax.set_title(titles[columns[i]])
 
         if color_intervals:
@@ -198,12 +198,13 @@ def plot_columns2(df,
         if type(columns[i]) == list:
             for col in columns[i]:
                 ax.plot(df["time"], df[col], label=col)
-                ax.set_ylabel(ylabels[col],fontdict=xfont, fontsize=24)
+                ax.set_ylabel(ylabels.get(col, default=col),fontdict=xfont, fontsize=24)
                 # ax.set_title(titles[col])
 
         else:
             ax.plot(df["time"], df[columns[i]], label=columns[i])
-            ax.set_ylabel(ylabels[columns[i]],fontdict=xfont, fontsize=24)
+            # ax.set_ylabel(ylabels.get(columns[i], default=columns[i]),fontdict=xfont, fontsize=24)
+            ax.set_ylabel(ylabels.get(columns[i], columns[i]),fontdict=xfont, fontsize=24)
             # ax.set_title(titles[columns[i]])
 
         if color_intervals:
@@ -541,6 +542,61 @@ def get_leg_cycles(df, col="Right Leg Pos", start_time_ms=0, end_time_ms=-1, min
         curr_idx = leg_end_idx + 1
 
     return strides
+
+#####################################
+# Plotting Fx vs. Fy and Fz, Fy vs. Fx and Fz, Fz vs. Fx and Fy
+#####################################
+
+def forces_pairplot(df):
+
+    lim = df[["Fx", "Fy", "Fz"]].abs().max().max() + .25
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(231)
+    ax1.scatter(df["Fx"], df["Fy"])
+    ax1.set_xlabel("Fx (N)")
+    ax1.set_ylabel("Fy (N)")
+    ax1.set_xlim([-lim, lim])
+    ax1.set_ylim([-lim, lim])
+
+    ax2 = fig.add_subplot(232)
+    ax2.scatter(df["Fy"], df["Fx"])
+    ax2.set_xlabel("Fy (N)")
+    ax2.set_ylabel("Fx (N)")
+    ax2.set_xlim([-lim, lim])
+    ax2.set_ylim([-lim, lim])
+
+    ax3 = fig.add_subplot(233)
+    ax3.scatter(df["Fz"], df["Fx"])
+    ax3.set_xlabel("Fz (N)")
+    ax3.set_ylabel("Fx (N)")
+    ax3.set_xlim([-lim, lim])
+    ax3.set_ylim([-lim, lim])
+
+    ax4 = fig.add_subplot(234)
+    ax4.scatter(df["Fx"], df["Fz"])
+    ax4.set_xlabel("Fx (N)")
+    ax4.set_ylabel("Fz (N)")
+    ax4.set_xlim([-lim, lim])
+    ax4.set_ylim([-lim, lim])
+
+    ax5 = fig.add_subplot(235)
+    ax5.scatter(df["Fy"], df["Fz"])
+    ax5.set_xlabel("Fy (N)")
+    ax5.set_ylabel("Fz (N)")
+    ax5.set_xlim([-lim, lim])
+    ax5.set_ylim([-lim, lim])
+
+    ax6 = fig.add_subplot(236)
+    ax6.scatter(df["Fz"], df["Fy"])
+    ax6.set_xlabel("Fz (N)")
+    ax6.set_ylabel("Fy (N)")
+    ax6.set_xlim([-lim, lim])
+    ax6.set_ylim([-lim, lim])
+
+    fig.tight_layout()
+    fig.set_size_inches(12, 6)
+    plt.show()
 
 #####################################
 # TESTING Code
