@@ -6,6 +6,7 @@ from scipy.io import loadmat
 from scipy import signal
 from scipy.integrate import quad
 from scipy import constants
+from scipy import integrate
 import matplotlib.pyplot as plt
 import seaborn as sns
 import math
@@ -83,9 +84,9 @@ ylabels = {
     "AY": "Acceleration m/s^2",
     "AZ": "Acceleration m/s^2",
     "A_mag": "Acceleration m/s^2",
-    "Fx": "Force (N)",
+    "Fx": "Drag Force (N)",
     "Fy": "Force (N)",
-    "Fz": "Force (N)",
+    "Fz": "Lift Force (N)",
     "F_mag": "Force (N)",
     "Mx": "Moment (mN * m)",
     "My": "Moment (mN * m)",
@@ -197,12 +198,12 @@ def plot_columns2(df,
 
         if type(columns[i]) == list:
             for col in columns[i]:
-                ax.plot(df["time"], df[col], label=col)
+                ax.plot(df["time"], df[col], label=col, linewidth=3)
                 ax.set_ylabel(ylabels.get(col, default=col),fontdict=xfont, fontsize=24)
                 # ax.set_title(titles[col])
 
         else:
-            ax.plot(df["time"], df[columns[i]], label=columns[i])
+            ax.plot(df["time"], df[columns[i]], label=columns[i], linewidth=3)
             # ax.set_ylabel(ylabels.get(columns[i], default=columns[i]),fontdict=xfont, fontsize=24)
             ax.set_ylabel(ylabels.get(columns[i], columns[i]),fontdict=xfont, fontsize=24)
             # ax.set_title(titles[columns[i]])
@@ -494,8 +495,27 @@ def calculate_drag_energy(df, has_bottom_shell, start_time, end_time,distance=0.
 
     Fnet_x = df["Fx"][start_time:end_time + 1]
     Fnet_x_avg = np.average(Fnet_x)
-    print "drag energy (kg*cm^2/s^2): {0}".format(math.fabs(Fnet_x_avg * distance)*100**2)
-    return math.fabs(Fnet_x_avg * distance)
+    print "drag energy (mJ): {0}".format(Fnet_x_avg * distance*1000)
+    return Fnet_x_avg * distance*1000
+
+
+def calculate_electrical_energy(df, start_time, end_time):
+    inside_flaps_PowerR = df["PowerR"][start_time:end_time + 1]
+    inside_flaps_PowerR_avg = np.average(inside_flaps_PowerR)
+    inside_flaps_PowerL = df["PowerL"][start_time:end_time + 1]
+    inside_flaps_PowerL_avg = np.average(inside_flaps_PowerL)
+    total_power = inside_flaps_PowerR_avg + inside_flaps_PowerL_avg
+    electrical_energy = total_power * (end_time - start_time)/1000.0
+    print "electrical energy (Joules): {0}".format(electrical_energy)
+    return
+
+def calculate_electrical_energy_cont(df, start_time, end_time):
+    inside_flaps_PowerR = df["PowerR"][start_time:end_time + 1]
+    inside_flaps_PowerL = df["PowerL"][start_time:end_time + 1]
+    total_power = inside_flaps_PowerL + inside_flaps_PowerR
+    ee = integrate.simps(total_power)
+    print "electrical energy cont: {0}".format(ee/1000.0)
+    return
 
 def get_cost_of_transport_from_list(df, has_bottom_shell,v_avg, intervals, isCm=False):
     cots = []
@@ -505,6 +525,18 @@ def get_cost_of_transport_from_list(df, has_bottom_shell,v_avg, intervals, isCm=
         val = cost_of_transport_inside_flaps(df,has_bottom_shell,v_avg, start_time,end_time,0,isCm)
         cots.append(val)
     return cots
+
+def get_drag_energy_from_list(df, has_bottom_shell, intervals, isCm=False):
+    #assuming the channel length is always 0.254 meters.
+    distance = float(0.254)/float(len(intervals)) #this is in meters
+    drags = []
+    for interval in intervals:
+        start_time = interval[0]
+        end_time = interval[1]
+        val = calculate_drag_energy(df, False, start_time, end_time, distance)
+        drags.append(val)
+
+    return drags
 
 
 def get_leg_cycles(df, col="Right Leg Pos", start_time_ms=0, end_time_ms=-1, min_cycle_len=900, max_cycle_len=1200):
@@ -536,11 +568,12 @@ def get_leg_cycles(df, col="Right Leg Pos", start_time_ms=0, end_time_ms=-1, min
         leg_end_idx = df.iloc[leg_begin_idx:leg_begin_idx + max_cycle_len][col].argmax()
 
         if leg_end_idx - leg_begin_idx > min_cycle_len:
-            print leg_begin_idx, leg_end_idx
+            # print leg_begin_idx, leg_end_idx
             strides.append((leg_begin_idx, leg_end_idx))
 
         curr_idx = leg_end_idx + 1
 
+    # print strides
     return strides
 
 #####################################
