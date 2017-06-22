@@ -10,6 +10,7 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import seaborn as sns
 import math
+from scipy import stats
 
 sns.set_style("whitegrid")
 sns.set_palette("bright")
@@ -230,6 +231,22 @@ def plot_columns2(df,
         print "Saving image as", output_dir + output_filename
         figure.savefig(output_dir + output_filename, dpi=450)
         print "Image saved."
+
+def fit_line_to_single_column(df, col='Fx', display=True):
+    x = df['time'].as_matrix()
+    y = df[col].as_matrix()
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+    predict_y = intercept + slope * x
+    plt.figure(0)
+    plt.plot(df['time'],df[col])
+    plt.plot(x, predict_y)
+    normalized = np.zeros(y.shape)
+    normalized = y - predict_y
+    plt.figure(1)
+    plt.plot(x, normalized)
+    if display:
+        plt.show()
+    return
 
 #########################################
 # PROCESS ROBOT TELEMETRY DATA
