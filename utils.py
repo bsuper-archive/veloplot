@@ -522,17 +522,17 @@ def calculate_electrical_energy(df, start_time, end_time):
     inside_flaps_PowerL = df["PowerL"][start_time:end_time + 1]
     inside_flaps_PowerL_avg = np.average(inside_flaps_PowerL)
     total_power = inside_flaps_PowerR_avg + inside_flaps_PowerL_avg
-    electrical_energy = total_power * (end_time - start_time)/1000.0
-    print "electrical energy (Joules): {0}".format(electrical_energy)
-    return
+    electrical_energy = total_power * (end_time - start_time) #this is mJ
+    print "electrical energy (mJ): {0}".format(electrical_energy)
+    return electrical_energy
 
 def calculate_electrical_energy_cont(df, start_time, end_time):
     inside_flaps_PowerR = df["PowerR"][start_time:end_time + 1]
     inside_flaps_PowerL = df["PowerL"][start_time:end_time + 1]
     total_power = inside_flaps_PowerL + inside_flaps_PowerR
     ee = integrate.simps(total_power)
-    print "electrical energy cont: {0}".format(ee/1000.0)
-    return
+    print "electrical energy cont(mJ): {0}".format(ee)
+    return ee
 
 def get_cost_of_transport_from_list(df, has_bottom_shell,v_avg, intervals, isCm=False):
     cots = []
@@ -554,6 +554,16 @@ def get_drag_energy_from_list(df, has_bottom_shell, intervals, isCm=False):
         drags.append(val)
 
     return drags
+
+def get_electrical_energy_from_list(df, has_bottom_shell, intervals,isCm=False):
+    elec_energies = []
+    for interval in intervals:
+        start_time=interval[0]
+        end_time=interval[1]
+        val = calculate_electrical_energy_cont(df, start_time, end_time)
+        # val = calculate_electrical_energy(df, start_time, end_time)
+        elec_energies.append(val)
+    return elec_energies
 
 
 def get_leg_cycles(df, col="Right Leg Pos", start_time_ms=0, end_time_ms=-1, min_cycle_len=900, max_cycle_len=1200):
