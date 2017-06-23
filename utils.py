@@ -246,7 +246,7 @@ def fit_line_to_single_column(df, col='Fx', display=True):
     plt.plot(x, normalized)
     if display:
         plt.show()
-    return
+    return predict_y
 
 #########################################
 # PROCESS ROBOT TELEMETRY DATA
