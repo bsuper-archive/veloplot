@@ -176,7 +176,7 @@ def plot_columns2(df,
                  display=False,
                  save_figure=True,
                  color_intervals=None,
-                 figsize=None):
+                 figsize=None,fontsize=24):
     """
     Columns - list of columns to plot with respect to time
     figsize - 2 item tuple containing (height, width) of tuple. For the
@@ -200,23 +200,26 @@ def plot_columns2(df,
         if type(columns[i]) == list:
             for col in columns[i]:
                 ax.plot(df["time"], df[col], label=col, linewidth=3)
-                ax.set_ylabel(ylabels.get(col, default=col),fontdict=xfont, fontsize=24)
+                ax.set_ylabel(ylabels.get(col, default=col),fontdict=xfont, fontsize=30)
                 # ax.set_title(titles[col])
 
         else:
             ax.plot(df["time"], df[columns[i]], label=columns[i], linewidth=3)
             # ax.set_ylabel(ylabels.get(columns[i], default=columns[i]),fontdict=xfont, fontsize=24)
-            ax.set_ylabel(ylabels.get(columns[i], columns[i]),fontdict=xfont, fontsize=24)
+            ax.set_ylabel(ylabels.get(columns[i], columns[i]),fontdict=xfont, fontsize=30)
             # ax.set_title(titles[columns[i]])
 
         if color_intervals:
-            for el in color_intervals:
-                ax.axvspan(el[0], el[1], facecolor='y', alpha=0.5)
+            for i in xrange(len(color_intervals)):
+                if i == 1:
+                    ax.axvspan(color_intervals[i][0], color_intervals[i][1], facecolor='y', alpha=0.5)
+                else:
+                    ax.axvspan(color_intervals[i][0], color_intervals[i][1], facecolor='g', alpha=0.5)
 
         ax.set_xlim([0, df["time"].max()])
-        ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=24)
-        ax.legend(bbox_to_anchor=(1.28, 1.05),fontsize=20)
-        ax.tick_params(axis='both', which='major', labelsize=20)
+        ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=35)
+        ax.legend(bbox_to_anchor=(1.28, 1.05),fontsize=fontsize)
+        ax.tick_params(axis='both', which='major', labelsize=fontsize)
         # ax.locator_params(nbins=10, axis='y')
 
     figure.set_size_inches(12, int(3 * len(columns)))
