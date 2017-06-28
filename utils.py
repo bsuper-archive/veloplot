@@ -212,9 +212,9 @@ def plot_columns2(df,
         if color_intervals:
             for i in xrange(len(color_intervals)):
                 if i == 1:
-                    ax.axvspan(color_intervals[i][0], color_intervals[i][1], facecolor='y', alpha=0.5)
+                    ax.axvspan(color_intervals[i][0], color_intervals[i][1], facecolor='#FF0000', alpha=0.5)
                 else:
-                    ax.axvspan(color_intervals[i][0], color_intervals[i][1], facecolor='g', alpha=0.5)
+                    ax.axvspan(color_intervals[i][0], color_intervals[i][1], facecolor="#5a5858", alpha=0.5)
 
         ax.set_xlim([0, df["time"].max()])
         ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=35)
