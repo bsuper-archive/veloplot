@@ -85,9 +85,11 @@ ylabels = {
     "AY": "Acceleration m/s^2",
     "AZ": "Acceleration m/s^2",
     "A_mag": "Acceleration m/s^2",
-    "Fx": "Drag Force (N)",
+    # "Fx": "Drag Force (N)",
+    "Fx": r"$F_{drag} (N)$",
     "Fy": "Force (N)",
-    "Fz": "Lift Force (N)",
+    "Fz": r"$F_{lift} (N)$",
+    # "Fz": "Lift Force (N)",
     "F_mag": "Force (N)",
     "Mx": "Moment (mN * m)",
     "My": "Moment (mN * m)",
@@ -176,7 +178,8 @@ def plot_columns2(df,
                  display=False,
                  save_figure=True,
                  color_intervals=None,
-                 figsize=None,fontsize=24):
+                 figsize=None,fontsize=50,
+                 plot_mean=True):
     """
     Columns - list of columns to plot with respect to time
     figsize - 2 item tuple containing (height, width) of tuple. For the
@@ -193,6 +196,13 @@ def plot_columns2(df,
         # Use the default figsize specified by rcparams.
         figure, axarr = plt.subplots(len(columns))
 
+    from matplotlib import rcParams
+    rcParams['font.family'] = 'Times New Roman'
+    rcParams['font.sans-serif'] = ['Times New Roman']
+    # rcParams['text.usetex'] = True
+    # rcParams['text.latex.unicode'] = True
+    rcParams['mathtext.fontset'] = 'cm'
+
     for i in range(len(columns)):
         # If len(columns) > 1, then axarr is an array of axes.
         ax = axarr[i] if len(columns) > 1 else axarr
@@ -200,29 +210,37 @@ def plot_columns2(df,
         if type(columns[i]) == list:
             for col in columns[i]:
                 ax.plot(df["time"], df[col], label=col, linewidth=3)
-                ax.set_ylabel(ylabels.get(col, default=col),fontdict=xfont, fontsize=30)
+                ax.set_ylabel(ylabels.get(col, default=col),fontdict=xfont, fontsize=fontsize)
+                ax.set_ylim(-0.75, 0.75)
                 # ax.set_title(titles[col])
 
         else:
             ax.plot(df["time"], df[columns[i]], label=columns[i], linewidth=3)
             # ax.set_ylabel(ylabels.get(columns[i], default=columns[i]),fontdict=xfont, fontsize=24)
-            ax.set_ylabel(ylabels.get(columns[i], columns[i]),fontdict=xfont, fontsize=30)
+            ax.set_ylabel(ylabels.get(columns[i], columns[i]),fontdict=xfont, fontsize=fontsize)
+            ax.set_ylim(-0.75, 0.75)
             # ax.set_title(titles[columns[i]])
 
         if color_intervals:
-            for i in xrange(len(color_intervals)):
-                if i == 1:
-                    ax.axvspan(color_intervals[i][0], color_intervals[i][1], facecolor='#FF0000', alpha=0.5)
+            for j in xrange(len(color_intervals)):
+                if j == 1:
+                    ax.axvspan(color_intervals[j][0], color_intervals[j][1], facecolor='#FF0000', alpha=0.5)
                 else:
-                    ax.axvspan(color_intervals[i][0], color_intervals[i][1], facecolor="#5a5858", alpha=0.5)
+                    ax.axvspan(color_intervals[j][0], color_intervals[j][1], facecolor="#5a5858", alpha=0.5)
+
+            if plot_mean:
+                mean = df[df["time"].between(color_intervals[1][0], color_intervals[-1][0])][columns[i]].mean()
+                print "MEANIE: ", mean
+                # ax.plot([color_intervals[0][0], color_intervals[-1][1]], [mean, mean], linewidth=3, linestyle='dashed', color='#09d8e2', label='mean')
 
         ax.set_xlim([0, df["time"].max()])
-        ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=35)
-        ax.legend(bbox_to_anchor=(1.28, 1.05),fontsize=fontsize)
+        ax.set_xlabel("Time (s)",fontdict=xfont, fontsize=fontsize)
+        # ax.legend(bbox_to_anchor=(1.28, 1.05),fontsize=fontsize)
+        # ax.legend(fontsize=fontsize, loc='lower left')
         ax.tick_params(axis='both', which='major', labelsize=fontsize)
         # ax.locator_params(nbins=10, axis='y')
 
-    figure.set_size_inches(12, int(3 * len(columns)))
+    figure.set_size_inches(12, int(5 * len(columns)))
     plt.tight_layout()
 
     if display:
